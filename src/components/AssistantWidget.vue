@@ -1,7 +1,7 @@
 <template>
   <div ref="dockEl" class="assistant-dock" :class="{ listening, running, expanded: panelOpen }" :style="dockStyle">
     <Transition name="assistant-panel">
-      <section v-if="panelOpen" class="assistant-panel" :class="{ 'voice-panel': phase === 'voice', 'voice-recognized': phase === 'voice' && voiceStage === 'recognized' }">
+      <section v-if="panelOpen" class="assistant-panel" :class="{ 'voice-panel': phase === 'voice', 'voice-recognized': phase === 'voice' && ['recognized', 'editing'].includes(voiceStage) }">
         <template v-if="phase === 'confirm'">
           <div class="assistant-head">
             <span class="mini-orb"><img :src="assistantIcon" alt="" /></span>
@@ -22,7 +22,12 @@
         <template v-else-if="phase === 'voice'">
           <div v-if="voiceStage === 'recognized'" class="recognized-state">
             <span class="recognized-dot" />
-            <div><strong>{{ t('assistant.recognized') }}</strong><small>{{ interimText }}</small></div>
+            <button type="button" class="recognized-text" @click="editRecognized"><strong>{{ t('assistant.recognized') }}</strong><small>{{ interimText }}</small></button>
+            <button type="button" class="recognized-send" :aria-label="t('assistant.send')" @click="submit"><van-icon name="guide-o" /></button>
+          </div>
+          <div v-else-if="voiceStage === 'editing'" class="voice-edit">
+            <input ref="inputEl" v-model="message" :aria-label="t('assistant.placeholder')" enterkeyhint="send" @keyup.enter="submit" />
+            <button type="button" :disabled="!message.trim()" :aria-label="t('assistant.send')" @click="submit"><van-icon name="guide-o" /></button>
           </div>
           <div v-else-if="voiceStage === 'error'" class="recognized-state error">
             <span class="recognized-check"><van-icon name="replay" /></span>
@@ -110,7 +115,6 @@ const selectedAmount = ref(100)
 let pressTimer
 let longPressed = false
 let recognition
-let voiceExecuteTimer
 let preserveOnNextRoute = false
 
 const dockStyle = computed(() => {
@@ -200,8 +204,11 @@ function finishVoiceRecognition(text = DEMO_VOICE_COMMAND) {
   interimText.value = recognizedText
   message.value = recognizedText
   voiceStage.value = 'recognized'
-  window.clearTimeout(voiceExecuteTimer)
-  voiceExecuteTimer = window.setTimeout(() => submit(), 1200)
+}
+
+function editRecognized() {
+  voiceStage.value = 'editing'
+  nextTick(() => inputEl.value?.focus())
 }
 
 function useCommand(command) {
@@ -278,7 +285,6 @@ function continueOrder() {
 }
 
 function reset() {
-  window.clearTimeout(voiceExecuteTimer)
   panelOpen.value = false
   phase.value = 'compose'
   hint.value = ''
@@ -307,7 +313,6 @@ onMounted(() => document.addEventListener('pointerdown', closeOnOutsidePress, tr
 
 onBeforeUnmount(() => {
   window.clearTimeout(pressTimer)
-  window.clearTimeout(voiceExecuteTimer)
   document.removeEventListener('pointerdown', closeOnOutsidePress, true)
   try { recognition?.abort() } catch { /* no-op */ }
 })
@@ -329,7 +334,8 @@ onBeforeUnmount(() => {
 .assistant-check { display: flex; align-items: flex-start; gap: 8px; padding: 7px 3px; color: #536174; font-size: 10px; line-height: 1.35; }.assistant-check input { width: 15px; height: 15px; flex: 0 0 auto; accent-color: #123b6d; }.continue-btn { width: 100%; margin-top: 8px; border: 0; border-radius: 12px; padding: 11px; background: #123b6d; color: #fff; font-size: 11px; font-weight: 750; }
 .assistant-panel.voice-panel { position: absolute; right: 0; bottom: 72px; width: 172px; border: 0; border-radius: 14px; padding: 8px 12px; background: linear-gradient(145deg,rgba(10,50,89,.96),rgba(21,76,124,.96)); box-shadow: 0 9px 22px rgba(7,37,69,.2); }.assistant-panel.voice-panel.voice-recognized { width: 238px; padding: 8px 12px; border-radius: 12px; }
 .voice-state { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 30px; }.wave-dot { width: 3px; height: 3px; flex: 0 0 3px; border-radius: 50%; background: #f0ca75; box-shadow: 0 0 6px rgba(240,202,117,.7); }.voice-bars { display: flex; align-items: center; justify-content: center; gap: 2px; height: 28px; }.voice-bars i { width: 2px; height: 4px; border-radius: 4px; background: #fff; opacity: .8; }.voice-bars.active i { animation: voice-bar .72s ease-in-out infinite alternate; }.voice-bars i:nth-child(2),.voice-bars i:nth-child(8),.voice-bars i:nth-child(14){animation-delay:.08s}.voice-bars i:nth-child(3),.voice-bars i:nth-child(7),.voice-bars i:nth-child(13){animation-delay:.16s}.voice-bars i:nth-child(4),.voice-bars i:nth-child(6),.voice-bars i:nth-child(10),.voice-bars i:nth-child(12){animation-delay:.24s}.voice-bars i:nth-child(5),.voice-bars i:nth-child(9),.voice-bars i:nth-child(11){animation-delay:.32s}.voice-transcript { display: block; margin: 1px auto 2px; overflow: hidden; color: rgba(255,255,255,.72); font-size: 8px; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
-.recognized-state { display: grid; grid-template-columns: 7px 1fr; align-items: center; gap: 8px; min-height: 32px; }.recognized-dot { width: 6px; height: 6px; border-radius: 50%; background: #5ed5a2; box-shadow: 0 0 8px rgba(94,213,162,.75); }.recognized-state strong,.recognized-state small { display: block; }.recognized-state strong { color: #9fb9d2; font-size: 7px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }.recognized-state small { margin-top: 3px; color: #fff; font-size: 9px; line-height: 1.25; white-space: normal; }.recognized-state.error { grid-template-columns: 26px 1fr; }.recognized-state.error .recognized-check { display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff; }
+.recognized-state { display: grid; grid-template-columns: 7px 1fr 30px; align-items: center; gap: 8px; min-height: 32px; }.recognized-dot { width: 6px; height: 6px; border-radius: 50%; background: #5ed5a2; box-shadow: 0 0 8px rgba(94,213,162,.75); }.recognized-text { min-width:0;border:0;padding:0;background:transparent;text-align:left; }.recognized-state strong,.recognized-state small { display: block; }.recognized-state strong { color: #9fb9d2; font-size: 7px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }.recognized-state small { margin-top: 3px; color: #fff; font-size: 9px; line-height: 1.25; white-space: normal; }.recognized-send,.voice-edit button { display:grid;place-items:center;width:28px;height:28px;border:0;border-radius:9px;background:#f0ca75;color:#103c69;font-size:14px; }.recognized-state.error { grid-template-columns: 26px 1fr; }.recognized-state.error .recognized-check { display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.16);color:#fff; }
+.voice-edit { display:flex;align-items:center;gap:7px; }.voice-edit input { min-width:0;height:32px;flex:1;border:1px solid rgba(255,255,255,.2);border-radius:9px;outline:0;padding:0 9px;background:rgba(255,255,255,.1);color:#fff;font-size:9px; }.voice-edit input:focus { border-color:#f0ca75;background:rgba(255,255,255,.14); }.voice-edit button:disabled { opacity:.45; }
 .assistant-panel-enter-active,.assistant-panel-leave-active { transition: opacity .2s ease,transform .24s cubic-bezier(.2,.8,.2,1); }.assistant-panel-enter-from,.assistant-panel-leave-to { opacity: 0; transform: translateX(18px) scale(.94); }
 @keyframes voice-pulse { from{opacity:.8;transform:scale(.9)} to{opacity:0;transform:scale(1.45)} } @keyframes voice-bar { from{height:8px} to{height:30px} } @keyframes assistant-run { 0%,100%{transform:scale(.92);opacity:.72} 50%{transform:scale(1);opacity:1} } @keyframes orb-roam { 0%,100%{transform:translate(0,0) rotate(-2deg)} 24%{transform:translate(-4px,-8px) rotate(4deg)} 52%{transform:translate(2px,-4px) rotate(-3deg)} 76%{transform:translate(-3px,-10px) rotate(3deg)} } @keyframes orb-breathe { 0%,100%{transform:scale(.96);filter:drop-shadow(0 8px 10px rgba(8,39,75,.28))} 50%{transform:scale(1.06);filter:drop-shadow(0 12px 16px rgba(20,83,140,.42))} } @keyframes orbit-spin { to{transform:rotate(360deg)} } @keyframes spark-pop { 0%,35%,100%{opacity:0;transform:scale(.2) translate(0,4px)} 48%{opacity:1;transform:scale(1.3) translate(2px,-3px)} 65%{opacity:.25;transform:scale(.7) translate(5px,-8px)} }
 @media (prefers-reduced-motion:reduce){.assistant-orb,.assistant-orb img,.idle-orbit,.idle-spark,.pulse,.voice-bars i{animation-duration:8s!important}}
