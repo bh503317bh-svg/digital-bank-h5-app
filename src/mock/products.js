@@ -14,23 +14,23 @@ export const wealthProductMeta = [
 
 /** Standardized trailing total returns. Official month-end NAV returns where available. */
 export const fundMeta = [
-  { id: 'f1', ticker: 'IBB', asOf: '30 Sep 26', y1: '46.08%', pop: 98, sector: 'biotech', key: 'products.f1' },
-  { id: 'f2', ticker: 'QQQ', asOf: '30 Sep 26', y1: '15.90%', pop: 96, sector: 'tech', key: 'products.f2' },
-  { id: 'f3', ticker: 'VIG', asOf: '30 Sep 26', y1: '9.77%', pop: 88, sector: 'dividend', key: 'products.f3' },
-  { id: 'f4', ticker: 'SPY', asOf: '30 Sep 26', y1: '15.60%', pop: 95, sector: 'broad', key: 'products.f4' },
-  { id: 'f5', ticker: 'XLK', asOf: '30 Sep 26', y1: '39.47%', pop: 90, sector: 'tech', key: 'products.f5' },
-  { id: 'f6', ticker: 'XLV', asOf: '30 Sep 26', y1: '24.80%', pop: 82, sector: 'healthcare', key: 'products.f6' },
-  { id: 'f7', ticker: 'GLD', asOf: '30 Sep 26', y1: '8.74%', pop: 85, sector: 'gold', key: 'products.f7' },
-  { id: 'f8', ticker: 'TLT', asOf: '30 Sep 26', y1: '-6.90%', pop: 70, sector: 'bond', key: 'products.f8' },
-  { id: 'f9', ticker: 'ARKK', asOf: '30 Sep 26', y1: '3.65%', pop: 78, sector: 'tech', key: 'products.f9' },
-  { id: 'f10', ticker: 'VTI', asOf: '30 Sep 26', y1: '15.33%', pop: 92, sector: 'broad', key: 'products.f10' },
-  { id: 'f11', ticker: 'ASEA', asOf: '30 Sep 26', y1: '27.65%', pop: 91, sector: 'asean', key: 'products.f11' },
-  { id: 'f12', ticker: 'EWS', asOf: '30 Sep 26', y1: '26.90%', pop: 89, sector: 'asean', key: 'products.f12' },
-  { id: 'f13', ticker: 'EWM', asOf: '30 Sep 26', y1: '10.31%', pop: 76, sector: 'asean', key: 'products.f13' },
-  { id: 'f14', ticker: 'EIDO', asOf: '30 Sep 26', y1: '-31.06%', pop: 84, sector: 'asean', key: 'products.f14' },
-  { id: 'f15', ticker: 'THD', asOf: '30 Sep 26', y1: '9.60%', pop: 80, sector: 'asean', key: 'products.f15' },
-  { id: 'f16', ticker: 'VNM', asOf: '30 Sep 26', y1: '12.20%', pop: 86, sector: 'asean', key: 'products.f16' },
-  { id: 'f17', ticker: 'EPHE', asOf: '30 Sep 26', y1: '-5.74%', pop: 74, sector: 'asean', key: 'products.f17' }
+  { id: 'f1', ticker: 'IBB', asOf: '2026-09-30', y1: '46.08%', pop: 98, sector: 'biotech', key: 'products.f1' },
+  { id: 'f2', ticker: 'QQQ', asOf: '2026-09-30', y1: '15.90%', pop: 96, sector: 'tech', key: 'products.f2' },
+  { id: 'f3', ticker: 'VIG', asOf: '2026-09-30', y1: '9.77%', pop: 88, sector: 'dividend', key: 'products.f3' },
+  { id: 'f4', ticker: 'SPY', asOf: '2026-09-30', y1: '15.60%', pop: 95, sector: 'broad', key: 'products.f4' },
+  { id: 'f5', ticker: 'XLK', asOf: '2026-09-30', y1: '39.47%', pop: 90, sector: 'tech', key: 'products.f5' },
+  { id: 'f6', ticker: 'XLV', asOf: '2026-09-30', y1: '24.80%', pop: 82, sector: 'healthcare', key: 'products.f6' },
+  { id: 'f7', ticker: 'GLD', asOf: '2026-09-30', y1: '8.74%', pop: 85, sector: 'gold', key: 'products.f7' },
+  { id: 'f8', ticker: 'TLT', asOf: '2026-09-30', y1: '-6.90%', pop: 70, sector: 'bond', key: 'products.f8' },
+  { id: 'f9', ticker: 'ARKK', asOf: '2026-09-30', y1: '3.65%', pop: 78, sector: 'tech', key: 'products.f9' },
+  { id: 'f10', ticker: 'VTI', asOf: '2026-09-30', y1: '15.33%', pop: 92, sector: 'broad', key: 'products.f10' },
+  { id: 'f11', ticker: 'ASEA', asOf: '2026-09-30', y1: '27.65%', pop: 91, sector: 'asean', key: 'products.f11' },
+  { id: 'f12', ticker: 'EWS', asOf: '2026-09-30', y1: '26.90%', pop: 89, sector: 'asean', key: 'products.f12' },
+  { id: 'f13', ticker: 'EWM', asOf: '2026-09-30', y1: '10.31%', pop: 76, sector: 'asean', key: 'products.f13' },
+  { id: 'f14', ticker: 'EIDO', asOf: '2026-09-30', y1: '-31.06%', pop: 84, sector: 'asean', key: 'products.f14' },
+  { id: 'f15', ticker: 'THD', asOf: '2026-09-30', y1: '9.60%', pop: 80, sector: 'asean', key: 'products.f15' },
+  { id: 'f16', ticker: 'VNM', asOf: '2026-09-30', y1: '12.20%', pop: 86, sector: 'asean', key: 'products.f16' },
+  { id: 'f17', ticker: 'EPHE', asOf: '2026-09-30', y1: '-5.74%', pop: 74, sector: 'asean', key: 'products.f17' }
 ]
 
 /** Demo quotes for well-known SEA-listed names. */

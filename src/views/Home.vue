@@ -124,7 +124,10 @@
           </div>
           <div class="prod-rate">
             <div class="rate">{{ p.rate }}</div>
-            <div class="muted tiny">{{ p.rateLabel }}</div>
+            <div class="yield-meta">
+              <span>{{ homeYieldLabel(p.id) }}</span>
+              <time>{{ shortAsOf(p.asOf) }}</time>
+            </div>
           </div>
         </div>
       </div>
@@ -157,6 +160,24 @@ const products = computed(() => {
   locale.value
   return localizeAccountProducts(t)
 })
+
+function homeYieldLabel(id) {
+  const labels = {
+    hqPlus: locale.value === 'zh-CN' ? '7日 SEC 收益率' : '7D SEC yield',
+    hqPlusX: locale.value === 'zh-CN' ? '7日收益率' : '7D yield',
+    gsPlus: locale.value === 'zh-CN' ? '30日 SEC 收益率' : '30D SEC yield'
+  }
+  return labels[id] || ''
+}
+
+function shortAsOf(value) {
+  if (!value) return ''
+  const date = new Date(`${value}T00:00:00`)
+  return new Intl.DateTimeFormat(locale.value === 'zh-CN' ? 'zh-CN' : 'en-US', {
+    month: 'short',
+    day: 'numeric'
+  }).format(date)
+}
 
 const quicks = computed(() => {
   locale.value
@@ -280,11 +301,20 @@ onMounted(() => {
   width: 44px; height: 44px;
   display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;
 }
-.prod-name { font-size: 15px; font-weight: 600; }
+.prod-left > div:last-child { min-width: 0; }
+.prod-name {
+  display: -webkit-box; overflow: hidden; font-size: 14px; font-weight: 600; line-height: 1.3;
+  -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+}
+.prod-left > div:last-child > .muted {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
 .prod-actions { display: flex; flex: 0 0 auto; gap: 7px; }.prod-actions .pill-btn { max-width: 92px; overflow: hidden; text-overflow: ellipsis; }
 .account-row .prod-left { gap: 8px; }.account-row .prod-icon { width: 38px; height: 38px; }.account-row .prod-name { font-size: 14px; white-space: nowrap; }.account-row .prod-actions { gap: 6px; }.account-row .prod-actions .pill-btn { height: 33px; padding: 0 10px; font-size: 10px; }
-.prod-rate { text-align: right; margin-left: 8px; }
+.prod-rate { width: 108px; flex: 0 0 108px; text-align: right; margin-left: 8px; }
 .prod-rate .rate { font-size: 20px; color: #00a870; }
+.yield-meta { margin-top: 3px; color: #8a8f99; font-size: 9px; line-height: 1.25; white-space: nowrap; }
+.yield-meta time { margin-left: 5px; padding-left: 5px; border-left: 1px solid #d9dee5; color: #a0a8b3; }
 .tiny { font-size: 11px; }
 .mini-tag {
   margin-left: 6px; font-size: 10px; color: #00a870; background: #e8f8f0;
