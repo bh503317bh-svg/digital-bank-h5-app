@@ -91,6 +91,7 @@ const PRODUCTS = [
   { id: 'f10', ticker: 'VTI', mark: 'VTI', nameKey: 'products.f10.name', rate: '20.05%', aliases: ['vti', 'total stock market', 'total us market'] },
   { id: 'f1', ticker: 'IBB', mark: 'IBB', nameKey: 'products.f1.name', rate: '23.46%', aliases: ['ibb', 'biotech', 'biotechnology'] }
 ]
+const DEMO_VOICE_COMMAND = 'Buy gold for 200 dollars'
 const panelOpen = ref(false)
 const phase = ref('compose')
 const message = ref('')
@@ -148,7 +149,7 @@ function onPointerUp() {
 
 function cancelPress() {
   window.clearTimeout(pressTimer)
-  if (listening.value) stopListening()
+  if (listening.value) reset()
 }
 
 function startListening() {
@@ -161,9 +162,7 @@ function startListening() {
   message.value = ''
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
   if (!SpeechRecognition) {
-    listening.value = false
-    voiceStage.value = 'error'
-    hint.value = t('assistant.voiceUnsupported')
+    recognition = null
     return
   }
   recognition = new SpeechRecognition()
@@ -177,26 +176,32 @@ function startListening() {
     message.value = interimText.value
   }
   recognition.onerror = () => {
-    listening.value = false
-    voiceStage.value = 'error'
-    hint.value = t('assistant.voiceError')
+    finishVoiceRecognition()
   }
   recognition.onend = () => {
-    listening.value = false
-    if (message.value.trim()) {
-      voiceStage.value = 'recognized'
-      voiceExecuteTimer = window.setTimeout(() => submit(), 1100)
-    } else if (voiceStage.value !== 'error') {
-      voiceStage.value = 'error'
-      hint.value = t('assistant.voiceError')
-    }
+    finishVoiceRecognition(message.value.trim() || DEMO_VOICE_COMMAND)
   }
-  try { recognition.start() } catch { listening.value = false }
+  try { recognition.start() } catch { recognition = null }
 }
 
 function stopListening() {
+  if (!recognition) {
+    finishVoiceRecognition()
+    return
+  }
+  try { recognition.stop() } catch { finishVoiceRecognition() }
+}
+
+function finishVoiceRecognition(text = DEMO_VOICE_COMMAND) {
+  if (voiceStage.value === 'recognized') return
   listening.value = false
-  try { recognition?.stop() } catch { /* recognition already stopped */ }
+  recognition = null
+  const recognizedText = text.trim() || DEMO_VOICE_COMMAND
+  interimText.value = recognizedText
+  message.value = recognizedText
+  voiceStage.value = 'recognized'
+  window.clearTimeout(voiceExecuteTimer)
+  voiceExecuteTimer = window.setTimeout(() => submit(), 1200)
 }
 
 function useCommand(command) {
@@ -278,7 +283,9 @@ function reset() {
   phase.value = 'compose'
   hint.value = ''
   confirmError.value = false
-  stopListening()
+  try { recognition?.abort() } catch { /* recognition already stopped */ }
+  recognition = null
+  listening.value = false
   message.value = ''
   interimText.value = ''
   voiceStage.value = 'idle'
@@ -320,7 +327,7 @@ onBeforeUnmount(() => {
 .assistant-head { display: grid; grid-template-columns: 34px 1fr 24px; gap: 8px; align-items: center; }.assistant-head strong,.assistant-head small { display: block; }.assistant-head strong { color: #142033; font-size: 13px; }.assistant-head small { margin-top: 3px; color: #7f8b9a; font-size: 9px; }.assistant-head button { border: 0; background: transparent; color: #8994a1; font-size: 20px; }.mini-orb { width: 32px; height: 32px; }.mini-orb img { width: 100%; height: 100%; border-radius: 50%; }
 .order-card { display: grid; grid-template-columns: 38px 1fr auto; gap: 9px; align-items: center; margin: 12px 0 9px; padding: 10px; border-radius: 12px; background: linear-gradient(135deg,#f4f7fa,#fbf7ed); }.product-mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; background: linear-gradient(145deg,#306ca5,#123b6d); color: #fff; font-size: 10px; font-weight: 800; }.product-mark.gold { background: linear-gradient(145deg,#e5c26f,#a97a2d); font-size: 13px; }.order-card strong,.order-card small { display: block; }.order-card strong { font-size: 11px; }.order-card small { margin-top: 3px; color: #85909f; font-size: 9px; }.order-card>b { color: #123b6d; font-size: 11px; white-space: nowrap; }
 .assistant-check { display: flex; align-items: flex-start; gap: 8px; padding: 7px 3px; color: #536174; font-size: 10px; line-height: 1.35; }.assistant-check input { width: 15px; height: 15px; flex: 0 0 auto; accent-color: #123b6d; }.continue-btn { width: 100%; margin-top: 8px; border: 0; border-radius: 12px; padding: 11px; background: #123b6d; color: #fff; font-size: 11px; font-weight: 750; }
-.assistant-panel.voice-panel { width: 176px; border: 0; border-radius: 16px; padding: 9px 13px; background: linear-gradient(145deg,rgba(10,50,89,.97),rgba(21,76,124,.97)); box-shadow: 0 12px 28px rgba(7,37,69,.24); }
+.assistant-panel.voice-panel { position: absolute; right: 0; bottom: 72px; width: 208px; border: 0; border-radius: 16px; padding: 10px 14px; background: linear-gradient(145deg,rgba(10,50,89,.98),rgba(21,76,124,.98)); box-shadow: 0 12px 28px rgba(7,37,69,.24); }
 .voice-state { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 30px; }.wave-dot { width: 3px; height: 3px; flex: 0 0 3px; border-radius: 50%; background: #f0ca75; box-shadow: 0 0 6px rgba(240,202,117,.7); }.voice-bars { display: flex; align-items: center; justify-content: center; gap: 2px; height: 28px; }.voice-bars i { width: 2px; height: 4px; border-radius: 4px; background: #fff; opacity: .8; }.voice-bars.active i { animation: voice-bar .72s ease-in-out infinite alternate; }.voice-bars i:nth-child(2),.voice-bars i:nth-child(8),.voice-bars i:nth-child(14){animation-delay:.08s}.voice-bars i:nth-child(3),.voice-bars i:nth-child(7),.voice-bars i:nth-child(13){animation-delay:.16s}.voice-bars i:nth-child(4),.voice-bars i:nth-child(6),.voice-bars i:nth-child(10),.voice-bars i:nth-child(12){animation-delay:.24s}.voice-bars i:nth-child(5),.voice-bars i:nth-child(9),.voice-bars i:nth-child(11){animation-delay:.32s}.voice-transcript { display: block; margin: 1px auto 2px; overflow: hidden; color: rgba(255,255,255,.72); font-size: 8px; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
 .recognized-state { display: grid; grid-template-columns: 30px 1fr; align-items: center; gap: 9px; min-height: 38px; }.recognized-check { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: #f0ca75; color: #103c69; font-size: 15px; }.recognized-state strong,.recognized-state small { display: block; }.recognized-state strong { color: #fff; font-size: 10px; }.recognized-state small { margin-top: 3px; overflow: hidden; color: rgba(255,255,255,.72); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }.recognized-state.error .recognized-check { background: rgba(255,255,255,.16); color: #fff; }
 .assistant-panel-enter-active,.assistant-panel-leave-active { transition: opacity .2s ease,transform .24s cubic-bezier(.2,.8,.2,1); }.assistant-panel-enter-from,.assistant-panel-leave-to { opacity: 0; transform: translateX(18px) scale(.94); }
