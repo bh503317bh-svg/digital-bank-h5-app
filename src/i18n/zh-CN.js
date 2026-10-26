@@ -29,6 +29,7 @@ export default {
     send: '发送',
     listening: '正在聆听…',
     voiceReady: '语音助理',
+    recognized: '识别成功',
     releaseToSend: '松开发送',
     voiceUnsupported: '当前环境暂不支持语音识别，请输入指令。',
     voiceError: '没有听清，请再试一次。',

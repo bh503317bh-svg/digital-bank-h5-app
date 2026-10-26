@@ -29,6 +29,7 @@ export default {
     send: 'Send',
     listening: 'Listening…',
     voiceReady: 'Voice assistant',
+    recognized: 'Recognized',
     releaseToSend: 'Release to send',
     voiceUnsupported: 'Voice recognition is unavailable here. Please type your request.',
     voiceError: 'I could not hear that clearly. Please try again.',

@@ -20,12 +20,20 @@
         </template>
 
         <template v-else-if="phase === 'voice'">
-          <div class="voice-state">
+          <div v-if="voiceStage === 'recognized'" class="recognized-state">
+            <span class="recognized-check"><van-icon name="success" /></span>
+            <div><strong>{{ t('assistant.recognized') }}</strong><small>{{ interimText }}</small></div>
+          </div>
+          <div v-else-if="voiceStage === 'error'" class="recognized-state error">
+            <span class="recognized-check"><van-icon name="replay" /></span>
+            <div><strong>{{ t('assistant.voiceReady') }}</strong><small>{{ hint }}</small></div>
+          </div>
+          <div v-else class="voice-state">
             <span class="wave-dot" />
             <div class="voice-bars" :class="{ active: listening }"><i v-for="n in 15" :key="n" /></div>
             <span class="wave-dot" />
           </div>
-          <small v-if="interimText || hint" class="voice-transcript">{{ interimText || hint }}</small>
+          <small v-if="voiceStage === 'listening' && interimText" class="voice-transcript">{{ interimText }}</small>
         </template>
 
         <template v-else>
@@ -90,6 +98,7 @@ const hint = ref('')
 const listening = ref(false)
 const running = ref(false)
 const interimText = ref('')
+const voiceStage = ref('idle')
 const productTerms = ref(false)
 const riskTerms = ref(false)
 const confirmError = ref(false)
@@ -100,6 +109,7 @@ const selectedAmount = ref(100)
 let pressTimer
 let longPressed = false
 let recognition
+let voiceExecuteTimer
 let preserveOnNextRoute = false
 
 const dockStyle = computed(() => {
@@ -145,11 +155,14 @@ function startListening() {
   phase.value = 'voice'
   panelOpen.value = true
   listening.value = true
+  voiceStage.value = 'listening'
   hint.value = ''
   interimText.value = ''
+  message.value = ''
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
   if (!SpeechRecognition) {
     listening.value = false
+    voiceStage.value = 'error'
     hint.value = t('assistant.voiceUnsupported')
     return
   }
@@ -165,11 +178,18 @@ function startListening() {
   }
   recognition.onerror = () => {
     listening.value = false
+    voiceStage.value = 'error'
     hint.value = t('assistant.voiceError')
   }
   recognition.onend = () => {
     listening.value = false
-    if (message.value.trim()) submit()
+    if (message.value.trim()) {
+      voiceStage.value = 'recognized'
+      voiceExecuteTimer = window.setTimeout(() => submit(), 1100)
+    } else if (voiceStage.value !== 'error') {
+      voiceStage.value = 'error'
+      hint.value = t('assistant.voiceError')
+    }
   }
   try { recognition.start() } catch { listening.value = false }
 }
@@ -253,6 +273,7 @@ function continueOrder() {
 }
 
 function reset() {
+  window.clearTimeout(voiceExecuteTimer)
   panelOpen.value = false
   phase.value = 'compose'
   hint.value = ''
@@ -260,6 +281,7 @@ function reset() {
   stopListening()
   message.value = ''
   interimText.value = ''
+  voiceStage.value = 'idle'
 }
 
 function closeOnOutsidePress(event) {
@@ -278,6 +300,7 @@ onMounted(() => document.addEventListener('pointerdown', closeOnOutsidePress, tr
 
 onBeforeUnmount(() => {
   window.clearTimeout(pressTimer)
+  window.clearTimeout(voiceExecuteTimer)
   document.removeEventListener('pointerdown', closeOnOutsidePress, true)
   try { recognition?.abort() } catch { /* no-op */ }
 })
@@ -297,8 +320,9 @@ onBeforeUnmount(() => {
 .assistant-head { display: grid; grid-template-columns: 34px 1fr 24px; gap: 8px; align-items: center; }.assistant-head strong,.assistant-head small { display: block; }.assistant-head strong { color: #142033; font-size: 13px; }.assistant-head small { margin-top: 3px; color: #7f8b9a; font-size: 9px; }.assistant-head button { border: 0; background: transparent; color: #8994a1; font-size: 20px; }.mini-orb { width: 32px; height: 32px; }.mini-orb img { width: 100%; height: 100%; border-radius: 50%; }
 .order-card { display: grid; grid-template-columns: 38px 1fr auto; gap: 9px; align-items: center; margin: 12px 0 9px; padding: 10px; border-radius: 12px; background: linear-gradient(135deg,#f4f7fa,#fbf7ed); }.product-mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; background: linear-gradient(145deg,#306ca5,#123b6d); color: #fff; font-size: 10px; font-weight: 800; }.product-mark.gold { background: linear-gradient(145deg,#e5c26f,#a97a2d); font-size: 13px; }.order-card strong,.order-card small { display: block; }.order-card strong { font-size: 11px; }.order-card small { margin-top: 3px; color: #85909f; font-size: 9px; }.order-card>b { color: #123b6d; font-size: 11px; white-space: nowrap; }
 .assistant-check { display: flex; align-items: flex-start; gap: 8px; padding: 7px 3px; color: #536174; font-size: 10px; line-height: 1.35; }.assistant-check input { width: 15px; height: 15px; flex: 0 0 auto; accent-color: #123b6d; }.continue-btn { width: 100%; margin-top: 8px; border: 0; border-radius: 12px; padding: 11px; background: #123b6d; color: #fff; font-size: 11px; font-weight: 750; }
-.assistant-panel.voice-panel { width: 214px; border-color: rgba(185,205,222,.82); border-radius: 999px; padding: 11px 18px; background: rgba(250,253,255,.96); box-shadow: 0 12px 30px rgba(11,51,91,.18); }
-.voice-state { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 34px; }.wave-dot { width: 4px; height: 4px; flex: 0 0 4px; border-radius: 50%; background: #c49a4c; box-shadow: 0 0 6px rgba(196,154,76,.55); }.voice-bars { display: flex; align-items: center; justify-content: center; gap: 3px; height: 32px; }.voice-bars i { width: 3px; height: 5px; border-radius: 4px; background: #174f82; opacity: .7; }.voice-bars.active i { animation: voice-bar .72s ease-in-out infinite alternate; }.voice-bars i:nth-child(2),.voice-bars i:nth-child(8),.voice-bars i:nth-child(14){animation-delay:.08s}.voice-bars i:nth-child(3),.voice-bars i:nth-child(7),.voice-bars i:nth-child(13){animation-delay:.16s}.voice-bars i:nth-child(4),.voice-bars i:nth-child(6),.voice-bars i:nth-child(10),.voice-bars i:nth-child(12){animation-delay:.24s}.voice-bars i:nth-child(5),.voice-bars i:nth-child(9),.voice-bars i:nth-child(11){animation-delay:.32s}.voice-transcript { display: block; margin: 2px auto 0; overflow: hidden; color: #758397; font-size: 8px; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+.assistant-panel.voice-panel { width: 176px; border: 0; border-radius: 16px; padding: 9px 13px; background: linear-gradient(145deg,rgba(10,50,89,.97),rgba(21,76,124,.97)); box-shadow: 0 12px 28px rgba(7,37,69,.24); }
+.voice-state { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 30px; }.wave-dot { width: 3px; height: 3px; flex: 0 0 3px; border-radius: 50%; background: #f0ca75; box-shadow: 0 0 6px rgba(240,202,117,.7); }.voice-bars { display: flex; align-items: center; justify-content: center; gap: 2px; height: 28px; }.voice-bars i { width: 2px; height: 4px; border-radius: 4px; background: #fff; opacity: .8; }.voice-bars.active i { animation: voice-bar .72s ease-in-out infinite alternate; }.voice-bars i:nth-child(2),.voice-bars i:nth-child(8),.voice-bars i:nth-child(14){animation-delay:.08s}.voice-bars i:nth-child(3),.voice-bars i:nth-child(7),.voice-bars i:nth-child(13){animation-delay:.16s}.voice-bars i:nth-child(4),.voice-bars i:nth-child(6),.voice-bars i:nth-child(10),.voice-bars i:nth-child(12){animation-delay:.24s}.voice-bars i:nth-child(5),.voice-bars i:nth-child(9),.voice-bars i:nth-child(11){animation-delay:.32s}.voice-transcript { display: block; margin: 1px auto 2px; overflow: hidden; color: rgba(255,255,255,.72); font-size: 8px; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+.recognized-state { display: grid; grid-template-columns: 30px 1fr; align-items: center; gap: 9px; min-height: 38px; }.recognized-check { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: #f0ca75; color: #103c69; font-size: 15px; }.recognized-state strong,.recognized-state small { display: block; }.recognized-state strong { color: #fff; font-size: 10px; }.recognized-state small { margin-top: 3px; overflow: hidden; color: rgba(255,255,255,.72); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }.recognized-state.error .recognized-check { background: rgba(255,255,255,.16); color: #fff; }
 .assistant-panel-enter-active,.assistant-panel-leave-active { transition: opacity .2s ease,transform .24s cubic-bezier(.2,.8,.2,1); }.assistant-panel-enter-from,.assistant-panel-leave-to { opacity: 0; transform: translateX(18px) scale(.94); }
 @keyframes voice-pulse { from{opacity:.8;transform:scale(.9)} to{opacity:0;transform:scale(1.45)} } @keyframes voice-bar { from{height:8px} to{height:30px} } @keyframes assistant-run { 0%,100%{transform:scale(.92);opacity:.72} 50%{transform:scale(1);opacity:1} } @keyframes orb-roam { 0%,100%{transform:translate(0,0) rotate(-2deg)} 24%{transform:translate(-4px,-8px) rotate(4deg)} 52%{transform:translate(2px,-4px) rotate(-3deg)} 76%{transform:translate(-3px,-10px) rotate(3deg)} } @keyframes orb-breathe { 0%,100%{transform:scale(.96);filter:drop-shadow(0 8px 10px rgba(8,39,75,.28))} 50%{transform:scale(1.06);filter:drop-shadow(0 12px 16px rgba(20,83,140,.42))} } @keyframes orbit-spin { to{transform:rotate(360deg)} } @keyframes spark-pop { 0%,35%,100%{opacity:0;transform:scale(.2) translate(0,4px)} 48%{opacity:1;transform:scale(1.3) translate(2px,-3px)} 65%{opacity:.25;transform:scale(.7) translate(5px,-8px)} }
 @media (prefers-reduced-motion:reduce){.assistant-orb,.assistant-orb img,.idle-orbit,.idle-spark,.pulse,.voice-bars i{animation-duration:8s!important}}
