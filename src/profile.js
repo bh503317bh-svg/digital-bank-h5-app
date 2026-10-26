@@ -1,4 +1,4 @@
-import ethanChenAvatar from './assets/avatars/ethan-chen.png'
+import ethanChenAvatar from './assets/avatars/ethan-chen-natural.png'
 
 const PLACEHOLDER_NAMES = new Set(['', 'User', 'Aku User', 'Customer', 'Guest'])
 
