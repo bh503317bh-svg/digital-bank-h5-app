@@ -20,14 +20,20 @@
 
     <div class="panel">
       <div v-if="loadingHome && !home" class="asset-card wb-card asset-loading">
-        <div class="skeleton label" />
-        <div class="skeleton amount" />
-        <div class="skeleton line" />
-        <div class="skeleton-ccy-strip">
-          <div v-for="n in 3" :key="n" class="skeleton-ccy-card">
-            <div class="skeleton ccy-title" />
-            <div class="skeleton ccy-amount" />
-            <div class="skeleton ccy-number" />
+        <div class="asset-hd">
+          <div class="skeleton sk-asset-label" />
+          <div class="skeleton sk-eye" />
+        </div>
+        <div class="asset-num sk-asset-num"><div class="skeleton" /></div>
+        <div class="asset-sub">
+          <div class="skeleton sk-asset-meta" />
+          <div class="skeleton sk-asset-link" />
+        </div>
+        <div class="ccy-strip skeleton-ccy-strip">
+          <div v-for="n in 3" :key="n" class="ccy-card skeleton-ccy-card">
+            <div class="ccy-card-top"><div class="skeleton sk-ccy-code" /><div class="skeleton sk-ccy-name" /></div>
+            <div class="ccy-bal"><div class="skeleton sk-ccy-amount" /></div>
+            <div class="ccy-no"><div class="skeleton sk-ccy-number" /></div>
           </div>
         </div>
       </div>
@@ -63,13 +69,31 @@
       </div>
 
       <div v-if="loadingHome && !home" class="product-list product-skeleton wb-card" aria-hidden="true">
-        <div v-for="n in 3" :key="n" class="prod-row skeleton-prod-row">
-          <div class="skeleton skeleton-icon" />
-          <div class="skeleton-copy">
-            <div class="skeleton skeleton-name" />
-            <div class="skeleton skeleton-sub" />
+        <div class="prod-row account-row skeleton-prod-row">
+          <div class="prod-left">
+            <div class="prod-icon"><div class="skeleton sk-account-icon" /></div>
+            <div class="skeleton-copy">
+              <div class="skeleton skeleton-name" />
+              <div class="skeleton skeleton-sub" />
+            </div>
           </div>
-          <div class="skeleton skeleton-action" />
+          <div class="prod-actions">
+            <div class="skeleton sk-account-action" />
+            <div class="skeleton sk-account-action" />
+          </div>
+        </div>
+        <div v-for="n in 2" :key="n" class="prod-row skeleton-prod-row">
+          <div class="prod-left">
+            <div class="prod-icon"><div class="skeleton sk-product-icon" /></div>
+            <div class="skeleton-copy">
+              <div class="skeleton skeleton-name" />
+              <div class="skeleton skeleton-sub" />
+            </div>
+          </div>
+          <div class="prod-rate sk-prod-rate">
+            <div class="skeleton sk-rate" />
+            <div class="skeleton sk-rate-label" />
+          </div>
         </div>
       </div>
       <div v-else-if="home" class="product-list wb-card">
@@ -223,7 +247,7 @@ onMounted(() => {
 }
 .panel { margin-top: -42px; padding: 0 12px 20px; }
 .asset-card { padding: 18px; border-top: 3px solid #c8a45d; }
-.asset-loading { min-height: 252px; }.skeleton { overflow: hidden; position: relative; border-radius: 8px; background: #edf1f4; }.skeleton::after { content: ''; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg,transparent,rgba(255,255,255,.72),transparent); animation: shimmer 1.25s infinite; }.skeleton.label { width: 90px; height: 14px; }.skeleton.amount { width: 210px; height: 38px; margin-top: 18px; }.skeleton.line { width: 100%; height: 12px; margin-top: 22px; }.skeleton-ccy-strip { display:flex;gap:9px;margin:18px -18px -18px;padding:13px 18px 16px;overflow:hidden;border-top:1px solid #edf0f3; }.skeleton-ccy-card { width:142px;min-width:142px;height:82px;padding:11px;border:1px solid #edf0f3;border-radius:12px;background:#fafbfd; }.skeleton.ccy-title { width:62px;height:9px; }.skeleton.ccy-amount { width:96px;height:17px;margin-top:10px; }.skeleton.ccy-number { width:54px;height:7px;margin-top:9px; }@keyframes shimmer{to{transform:translateX(100%)}}
+.skeleton { overflow: hidden; position: relative; border-radius: 8px; background: #edf1f4; }.skeleton::after { content: ''; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg,transparent,rgba(255,255,255,.72),transparent); animation: shimmer 1.25s infinite; }.sk-asset-label { width:82px;height:13px; }.sk-eye { width:16px;height:13px;border-radius:7px; }.sk-asset-num { height:36px;display:flex;align-items:center; }.sk-asset-num .skeleton { width:210px;height:30px; }.sk-asset-meta { width:128px;height:12px; }.sk-asset-link { width:76px;height:12px; }.skeleton-ccy-strip { overflow:hidden; }.skeleton-ccy-card { box-shadow:none; }.sk-ccy-code { width:29px;height:10px; }.sk-ccy-name { width:52px;height:8px; }.sk-ccy-amount { width:94px;height:16px; }.sk-ccy-number { width:58px;height:8px; }@keyframes shimmer{to{transform:translateX(100%)}}
 .asset-error { min-height: 142px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; }.error-icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 13px; background: #eef3f8; color: #123b6d; font-size: 20px; }.asset-error strong,.asset-error span { display: block; }.asset-error strong { font-size: 13px; }.asset-error span { margin-top: 4px; color: #8a95a4; font-size: 10px; }.asset-error button { border: 1px solid rgba(18,59,109,.22); border-radius: 9px; padding: 8px 10px; background: #fff; color: #123b6d; font-size: 11px; font-weight: 650; }
 .asset-hd { display: flex; justify-content: space-between; color: #666; font-size: 13px; }
 .asset-num { margin-top: 9px; color: #102f52; line-height: 1; }:deep(.asset-num .size-xl) { font-size: 36px; }:deep(.asset-num .currency-code) { font-size: 11px; }
@@ -245,7 +269,7 @@ onMounted(() => {
 .banner-title { font-size: 15px; font-weight: 600; padding-right: 70px; }
 .banner-sub { margin: 6px 0 12px; color: #8a8f99; font-size: 12px; }
 .product-list { margin-top: 12px; padding: 4px 12px; }
-.product-skeleton { min-height:224px; }.skeleton-prod-row { justify-content:flex-start;min-height:72px; }.skeleton-icon { width:38px;height:38px;flex:0 0 38px;border-radius:12px; }.skeleton-copy { flex:1;min-width:0;margin-left:10px; }.skeleton-name { width:58%;height:12px; }.skeleton-sub { width:78%;height:8px;margin-top:8px; }.skeleton-action { width:70px;height:30px;flex:0 0 70px;margin-left:10px;border-radius:10px; }
+.skeleton-prod-row { min-height:72px; }.skeleton-copy { min-width:118px; }.skeleton-name { width:104px;height:14px; }.skeleton-sub { width:132px;height:10px;margin-top:6px; }.sk-account-icon { width:38px;height:38px;border-radius:10px; }.sk-product-icon { width:44px;height:44px;border-radius:10px; }.sk-account-action { width:72px;height:33px;border-radius:10px; }.sk-prod-rate { width:82px; }.sk-rate { width:72px;height:20px;margin-left:auto; }.sk-rate-label { width:82px;height:10px;margin-top:5px; }
 .prod-row {
   display: flex; align-items: center; justify-content: space-between;
   padding: 14px 0; border-bottom: 1px solid #f0f2f5;
