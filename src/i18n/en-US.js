@@ -45,6 +45,7 @@ export default {
     advisorSubtitle: 'A few options based on your request',
     chooseProduct: 'I found several higher-return products. Which one would you like to invest in?',
     typing: 'Wealth advisor is typing',
+    intentRecognizing: 'Recognizing your intent',
     needBuyIntent: 'Start with “Buy”, “Purchase” or “Invest”.',
     unsupportedProduct: 'Try QQQ, GLD/gold, SPY, VTI or IBB.',
     needAmount: 'Please include a USD amount, such as “for 500 dollars”.',
