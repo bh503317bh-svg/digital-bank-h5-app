@@ -108,6 +108,7 @@ const voiceStage = ref('idle')
 const productTerms = ref(false)
 const riskTerms = ref(false)
 const confirmError = ref(false)
+const orderTransitioning = ref(false)
 const inputEl = ref(null)
 const dockEl = ref(null)
 const selectedProduct = ref(PRODUCTS[1])
@@ -116,6 +117,7 @@ let pressTimer
 let longPressed = false
 let recognition
 let preserveOnNextRoute = false
+let agreementTimer
 
 const dockStyle = computed(() => {
   const hasBottomAction = ['/wealth/detail', '/wealth/buy'].includes(route.path)
@@ -269,10 +271,12 @@ function submit() {
 }
 
 function continueOrder() {
+  if (orderTransitioning.value) return
   if (!productTerms.value || !riskTerms.value) {
     confirmError.value = true
     return
   }
+  orderTransitioning.value = true
   confirmError.value = false
   panelOpen.value = false
   running.value = true
@@ -280,11 +284,13 @@ function continueOrder() {
     const product = selectedProduct.value
     router.push({ path: '/wealth/buy', query: { id: product.id, name: t(product.nameKey), rate: product.rate, amount: String(selectedAmount.value), assistant: 'trade', terms: 'accepted', autoReview: '1' } })
     running.value = false
+    orderTransitioning.value = false
     phase.value = 'compose'
   }, 420)
 }
 
 function reset() {
+  window.clearTimeout(agreementTimer)
   panelOpen.value = false
   phase.value = 'compose'
   hint.value = ''
@@ -295,6 +301,7 @@ function reset() {
   message.value = ''
   interimText.value = ''
   voiceStage.value = 'idle'
+  orderTransitioning.value = false
 }
 
 function closeOnOutsidePress(event) {
@@ -309,10 +316,18 @@ watch(() => route.fullPath, () => {
   if (panelOpen.value || listening.value) reset()
 })
 
+watch([productTerms, riskTerms], ([acceptedProduct, acceptedRisk]) => {
+  window.clearTimeout(agreementTimer)
+  if (phase.value === 'confirm' && acceptedProduct && acceptedRisk && !orderTransitioning.value) {
+    agreementTimer = window.setTimeout(() => continueOrder(), 350)
+  }
+})
+
 onMounted(() => document.addEventListener('pointerdown', closeOnOutsidePress, true))
 
 onBeforeUnmount(() => {
   window.clearTimeout(pressTimer)
+  window.clearTimeout(agreementTimer)
   document.removeEventListener('pointerdown', closeOnOutsidePress, true)
   try { recognition?.abort() } catch { /* no-op */ }
 })
