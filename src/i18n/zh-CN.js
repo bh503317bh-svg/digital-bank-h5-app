@@ -23,9 +23,12 @@ export default {
   assistant: {
     title: 'aku 智能助理',
     holdToTalk: '长按说话',
+    composeHelp: '输入指令或选择快捷操作',
+    quickActions: '快捷输入',
     placeholder: '向 aku 助理提问…',
     send: '发送',
     listening: '正在聆听…',
+    voiceReady: '语音助理',
     releaseToSend: '松开发送',
     voiceUnsupported: '当前环境暂不支持语音识别，请输入指令。',
     voiceError: '没有听清，请再试一次。',

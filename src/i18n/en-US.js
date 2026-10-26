@@ -23,9 +23,12 @@ export default {
   assistant: {
     title: 'aku Assistant',
     holdToTalk: 'Hold to talk',
+    composeHelp: 'Type a request or choose a shortcut',
+    quickActions: 'Quick actions',
     placeholder: 'Ask aku Assistant…',
     send: 'Send',
     listening: 'Listening…',
+    voiceReady: 'Voice assistant',
     releaseToSend: 'Release to send',
     voiceUnsupported: 'Voice recognition is unavailable here. Please type your request.',
     voiceError: 'I could not hear that clearly. Please try again.',
