@@ -1,5 +1,5 @@
 <template>
-  <div class="assistant-dock" :class="{ listening, running, expanded: panelOpen }" :style="dockStyle">
+  <div ref="dockEl" class="assistant-dock" :class="{ listening, running, expanded: panelOpen }" :style="dockStyle">
     <Transition name="assistant-panel">
       <section v-if="panelOpen" class="assistant-panel">
         <template v-if="phase === 'confirm'">
@@ -71,7 +71,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onBeforeUnmount, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import assistantIcon from '../assets/icons/aku-assistant.png'
@@ -97,11 +97,13 @@ const productTerms = ref(false)
 const riskTerms = ref(false)
 const confirmError = ref(false)
 const inputEl = ref(null)
+const dockEl = ref(null)
 const selectedProduct = ref(PRODUCTS[1])
 const selectedAmount = ref(100)
 let pressTimer
 let longPressed = false
 let recognition
+let preserveOnNextRoute = false
 
 const dockStyle = computed(() => {
   const hasBottomAction = ['/wealth/detail', '/wealth/buy'].includes(route.path)
@@ -233,6 +235,7 @@ function submit() {
   productTerms.value = false
   riskTerms.value = false
   confirmError.value = false
+  preserveOnNextRoute = true
   router.push({ path: '/wealth/detail', query: { id: product.id, name: t(product.nameKey), rate: product.rate, assistant: 'trade', amount: String(amount) } })
 }
 
@@ -262,16 +265,33 @@ function reset() {
   interimText.value = ''
 }
 
+function closeOnOutsidePress(event) {
+  if (panelOpen.value && !dockEl.value?.contains(event.target)) reset()
+}
+
+watch(() => route.fullPath, () => {
+  if (preserveOnNextRoute) {
+    preserveOnNextRoute = false
+    return
+  }
+  if (panelOpen.value || listening.value) reset()
+})
+
+onMounted(() => document.addEventListener('pointerdown', closeOnOutsidePress, true))
+
 onBeforeUnmount(() => {
   window.clearTimeout(pressTimer)
+  document.removeEventListener('pointerdown', closeOnOutsidePress, true)
   try { recognition?.abort() } catch { /* no-op */ }
 })
 </script>
 
 <style scoped>
 .assistant-dock { position: fixed; z-index: 50; right: max(14px,calc((100vw - 480px)/2 + 14px)); display: flex; align-items: flex-end; gap: 10px; pointer-events: none; }
-.assistant-orb { position: relative; width: 58px; height: 58px; flex: 0 0 58px; border: 0; border-radius: 50%; padding: 2px; background: linear-gradient(145deg,#f2d28e,#9f7332); box-shadow: 0 10px 26px rgba(10,44,81,.28),0 0 0 4px rgba(255,255,255,.88); pointer-events: auto; touch-action: none; transition: transform .22s ease,filter .22s ease; }
+.assistant-orb { position: relative; width: 58px; height: 58px; flex: 0 0 58px; border: 0; border-radius: 50%; padding: 2px; overflow: visible; background: linear-gradient(145deg,#f2d28e,#9f7332); box-shadow: 0 10px 26px rgba(10,44,81,.28),0 0 0 4px rgba(255,255,255,.88); pointer-events: auto; touch-action: none; transition: transform .22s ease,filter .22s ease; }
+.assistant-orb::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: linear-gradient(115deg,transparent 28%,rgba(255,255,255,.5) 44%,transparent 59%); background-size: 220% 100%; pointer-events: none; animation: orb-shine 3.4s ease-in-out infinite; }
 .assistant-orb:active { transform: scale(.92); }.assistant-orb img { display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }.assistant-dock.running .assistant-orb { animation: assistant-run 1.2s ease-in-out infinite; filter: saturate(.7); }
+.assistant-dock:not(.listening):not(.running) .assistant-orb { animation: orb-float 3s ease-in-out infinite; }
 .pulse { position: absolute; z-index: -1; inset: -5px; border: 2px solid rgba(56,142,222,.55); border-radius: 50%; animation: voice-pulse 1.35s ease-out infinite; }.pulse.p2 { animation-delay: .55s; }.live-dot { position: absolute; right: 2px; bottom: 3px; width: 10px; height: 10px; border: 2px solid #fff; border-radius: 50%; background: #23b679; }
 .hold-tip { position: absolute; right: 3px; bottom: -18px; width: max-content; color: #6f7d8e; font-size: 8px; font-weight: 650; text-shadow: 0 1px 2px #fff; pointer-events: none; }
 .assistant-panel { width: min(330px,calc(100vw - 92px)); border: 1px solid rgba(196,211,224,.9); border-radius: 20px; padding: 14px; background: rgba(255,255,255,.985); box-shadow: 0 20px 52px rgba(9,39,72,.22); backdrop-filter: blur(18px); pointer-events: auto; }
@@ -283,6 +303,7 @@ onBeforeUnmount(() => {
 .assistant-check { display: flex; align-items: flex-start; gap: 8px; padding: 7px 3px; color: #536174; font-size: 10px; line-height: 1.35; }.assistant-check input { width: 15px; height: 15px; flex: 0 0 auto; accent-color: #123b6d; }.continue-btn { width: 100%; margin-top: 8px; border: 0; border-radius: 12px; padding: 11px; background: #123b6d; color: #fff; font-size: 11px; font-weight: 750; }
 .voice-state { display: flex; align-items: center; gap: 13px; min-height: 62px; padding: 7px; border-radius: 15px; background: linear-gradient(135deg,#edf4fa,#fbf7ec); }.voice-visual { position: relative; display: grid; place-items: center; width: 58px; height: 48px; flex: 0 0 58px; }.voice-core { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(145deg,#215e98,#0b315c); box-shadow: 0 6px 16px rgba(17,62,105,.25); color: #fff; font-size: 18px; }.voice-copy { min-width: 0; }.voice-copy strong,.voice-copy small { display: block; }.voice-copy strong { color: #123b6d; font-size: 12px; }.voice-copy small { max-width: 190px; margin-top: 5px; overflow: hidden; color: #728194; font-size: 9px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }.voice-bars { position: absolute; right: -2px; bottom: 3px; display: flex; align-items: center; gap: 2px; height: 25px; padding: 3px; border-radius: 8px; background: rgba(255,255,255,.9); }.voice-bars i { width: 2px; height: 7px; border-radius: 4px; background: linear-gradient(#2b81c2,#c69e51); animation: voice-bar .8s ease-in-out infinite alternate; }.voice-bars i:nth-child(2),.voice-bars i:nth-child(6){animation-delay:.15s}.voice-bars i:nth-child(3),.voice-bars i:nth-child(5){animation-delay:.3s}.voice-bars i:nth-child(4){animation-delay:.45s}.voice-cancel { width: 100%; margin-top: 9px; border: 0; background: transparent; color: #758397; font-size: 9px; }
 .assistant-panel-enter-active,.assistant-panel-leave-active { transition: opacity .2s ease,transform .24s cubic-bezier(.2,.8,.2,1); }.assistant-panel-enter-from,.assistant-panel-leave-to { opacity: 0; transform: translateX(18px) scale(.94); }
-@keyframes voice-pulse { from{opacity:.8;transform:scale(.9)} to{opacity:0;transform:scale(1.45)} } @keyframes voice-bar { from{height:8px} to{height:30px} } @keyframes assistant-run { 0%,100%{transform:scale(.92);opacity:.72} 50%{transform:scale(1);opacity:1} }
+@keyframes voice-pulse { from{opacity:.8;transform:scale(.9)} to{opacity:0;transform:scale(1.45)} } @keyframes voice-bar { from{height:8px} to{height:30px} } @keyframes assistant-run { 0%,100%{transform:scale(.92);opacity:.72} 50%{transform:scale(1);opacity:1} } @keyframes orb-float { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-5px) rotate(2deg)} } @keyframes orb-shine { 0%,58%{background-position:180% 0;opacity:0} 68%{opacity:.9} 86%,100%{background-position:-70% 0;opacity:0} }
+@media (prefers-reduced-motion:reduce){.assistant-orb,.assistant-orb::after,.pulse,.voice-bars i{animation:none!important}}
 @media (max-width:360px){.assistant-panel{width:calc(100vw - 86px);padding:11px}.order-card>b{font-size:10px}}
 </style>
