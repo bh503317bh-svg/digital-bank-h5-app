@@ -63,26 +63,28 @@
       <div v-for="p in visibleProducts" :key="p.id" class="item" @click="goBuy(p)">
         <div class="row1">
           <div class="issuer-mark"><FeatureIcon name="wealth" /></div>
-          <div class="product-copy"><span class="org">{{ p.org }}</span><span class="name">{{ p.name }}</span></div>
-          <span class="tag">{{ p.tag }}</span>
+          <div class="product-copy">
+            <div class="issuer-line"><span class="org">{{ p.org }}</span><span class="tag">{{ p.tag }}</span></div>
+            <span class="name">{{ p.name }}</span>
+          </div>
           <van-icon
+            class="watch-star"
             :name="watched(p.id) ? 'star' : 'star-o'"
             :color="watched(p.id) ? '#f5c518' : '#bbb'"
             @click.stop="onWatch(p)"
           />
         </div>
         <div class="row2">
-          <div>
-            <div class="rate big">{{ p.rate }}</div>
-            <div class="muted">{{ p.rateLabel }}</div>
-          </div>
-          <div class="right">
+          <div class="product-terms">
             <div>{{ p.hold }}</div>
-            <div class="muted">{{ p.risk }}</div>
+            <div class="risk-pill">{{ riskLevel(p) }}</div>
+          </div>
+          <div class="yield-block">
+            <div class="rate big">{{ p.rate }}</div>
+            <div class="yield-caption"><span>{{ yieldLabel(p) }}</span><time>{{ shortDate(p.asOf) }}</time></div>
           </div>
         </div>
-        <div class="product-meta"><span>USD</span><span>{{ t('wealth.professionalCustody') }}</span><span>{{ p.risk }}</span></div>
-        <div class="tip"><van-icon name="volume-o" size="14" /> {{ p.tip }}</div>
+        <div class="tip"><span class="currency-chip">{{ p.id === 'w3' ? 'SGD' : 'USD' }}</span><span>{{ p.tip }}</span><van-icon name="arrow" /></div>
       </div>
     </div>
 
@@ -122,6 +124,22 @@ const watchTick = ref(0)
 const listAnchor = ref(null)
 const cashPromoRate = accountProductsMeta.find((product) => product.id === 'hqPlusX')?.rate || '—'
 const vtiRate = wealthProductMeta.find((product) => product.id === 'w2')?.rate || '—'
+
+function yieldLabel(product) {
+  return String(product.rateLabel || '').split(' · ')[0]
+}
+
+function shortDate(value) {
+  if (!value) return ''
+  return new Intl.DateTimeFormat(locale.value === 'zh-CN' ? 'zh-CN' : 'en-US', {
+    month: 'short',
+    day: 'numeric'
+  }).format(new Date(`${value}T00:00:00`))
+}
+
+function riskLevel(product) {
+  return String(product.risk || '').split('|')[0].trim()
+}
 
 const cats = computed(() => {
   locale.value
@@ -251,22 +269,31 @@ function openWatch(w) {
 .link { margin-top: 8px; color: #123b6d; font-size: 13px; font-weight: 600; }
 .big { font-size: 24px; margin-top: 6px; }
 .muted { color: #8a8f99; font-size: 12px; margin-top: 4px; }
-.list { padding: 2px 14px; }
-.item { padding: 14px 0; border-bottom: 1px solid #f0f2f5; }
-.item:last-child { border-bottom: none; }
+.list { padding: 0; border: 0; background: transparent; box-shadow: none; }
+.item { margin-bottom: 10px; padding: 14px; border: 1px solid rgba(18,59,109,.06); border-radius: 15px; background: #fff; box-shadow: 0 7px 20px rgba(19,49,82,.055); }
+.item:last-child { margin-bottom: 0; }
 .row1 { display: flex; align-items: center; gap: 9px; }
-.issuer-mark { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 38px; padding: 2px; }
+.issuer-mark { display: grid; place-items: center; width: 42px; height: 42px; flex: 0 0 42px; padding: 2px; }
 .product-copy { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 2px; }
-.org { font-size: 12px; color: #666; }
-.name { font-weight: 700; font-size: 14px; }
-.tag { font-size: 10px; color: #ff6b00; background: #fff1e6; border-radius: 4px; padding: 1px 4px; }
-.row2 { margin-top: 8px; display: flex; justify-content: space-between; gap: 10px; }
-.right { text-align: right; font-size: 12px; color: #555; }
-.product-meta { display: flex; gap: 6px; margin-top: 9px; }.product-meta span { padding: 3px 6px; border-radius: 5px; background: #f1f4f7; color: #637083; font-size: 9px; }
+.issuer-line { display: flex; align-items: center; min-width: 0; gap: 6px; }
+.org { font-size: 11px; color: #7e8998; }
+.name { overflow: hidden; font-weight: 700; font-size: 14px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+.tag { overflow: hidden; max-width: 112px; font-size: 9px; color: #9b6720; background: #fbf3e3; border-radius: 999px; padding: 2px 6px; text-overflow: ellipsis; white-space: nowrap; }
+.watch-star { flex: 0 0 auto; padding: 6px 0 6px 6px; font-size: 17px; }
+.row2 { margin-top: 11px; display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.yield-block { min-width: 122px; text-align: right; }
+.yield-block .big { margin-top: 0; font-size: 25px; line-height: 1; }
+.yield-caption { margin-top: 6px; color: #8893a2; font-size: 10px; white-space: nowrap; }
+.yield-caption time { margin-left: 6px; padding-left: 6px; border-left: 1px solid #dce2e8; color: #a0a8b2; }
+.product-terms { min-width: 0; color: #536174; font-size: 11px; }
+.risk-pill { display: inline-block; margin-top: 5px; padding: 3px 7px; border-radius: 999px; background: #eef3f8; color: #536b86; font-size: 9px; }
 .tip {
-  margin-top: 8px; background: #f7f8fa; border-radius: 8px; padding: 8px 10px;
-  font-size: 12px; color: #666; line-height: 1.4;
+  margin-top: 11px; display: flex; align-items: center; min-width: 0; gap: 7px; border-top: 1px solid #eef1f4; padding-top: 10px;
+  font-size: 10px; color: #6f7b8b; line-height: 1.3;
 }
+.tip > span:nth-child(2) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tip > .van-icon { margin-left: auto; flex: 0 0 auto; color: #9aa5b2; }
+.currency-chip { flex: 0 0 auto; padding: 3px 6px; border-radius: 5px; background: #eef3f8; color: #526b86; font-size: 9px; font-weight: 700; }
 .empty { padding: 20px; text-align: center; color: #999; font-size: 13px; }
 .watch-sheet { padding: 8px 16px 24px; max-height: 50vh; overflow: auto; }
 .watch-row {

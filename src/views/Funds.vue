@@ -66,13 +66,9 @@
                   @click.stop="onWatch(f)"
                 />
               </div>
-              <div :class="['metrics', subTab === 'hot' ? 'with-pop' : '']">
-                <div v-if="subTab === 'hot'">
-                  <div class="pop">{{ f.pop }}</div>
-                  <div class="muted">{{ t('funds.popScore') }}</div>
-                </div>
-                <div>
-                  <div class="as-of">{{ f.asOf }}</div>
+              <div class="metrics">
+                <div class="date-metric">
+                  <div class="as-of">{{ formatFundDate(f.asOf) }}</div>
                   <div class="muted">{{ t('funds.w1') }}</div>
                 </div>
                 <div>
@@ -99,7 +95,7 @@
               </div>
               <div class="metrics">
                 <div>
-                  <div class="as-of">{{ f.asOf }}</div>
+                  <div class="as-of">{{ formatFundDate(f.asOf) }}</div>
                   <div class="muted">{{ t('funds.w1') }}</div>
                 </div>
                 <div>
@@ -321,6 +317,16 @@ function rateClass(v) {
   return String(v).startsWith('-') ? 'down' : 'up'
 }
 
+function formatFundDate(value) {
+  if (!value) return ''
+  const normalized = /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : '2026-09-30'
+  return new Intl.DateTimeFormat(locale.value === 'zh-CN' ? 'zh-CN' : 'en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  }).format(new Date(`${normalized}T00:00:00`))
+}
+
 function goBuy(f) {
   router.push({
     path: '/wealth/detail',
@@ -393,8 +399,9 @@ function openWatch(w) {
 }
 .fund:last-child { border-bottom: none; }
 .rank {
-  width: 22px; flex-shrink: 0; text-align: center;
-  font-size: 15px; font-weight: 700; color: #bbb; line-height: 22px; margin-top: 2px;
+  width: 22px; align-self: stretch; flex-shrink: 0;
+  display: grid; place-items: center; text-align: center;
+  font-size: 15px; font-weight: 700; color: #bbb; line-height: 1;
 }
 .rank.top { color: #ff6b00; }
 .body { flex: 1; min-width: 0; }
@@ -416,9 +423,9 @@ function openWatch(w) {
   margin-top: 10px; display: grid;
   grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: center;
 }
-.metrics.with-pop { grid-template-columns: 1fr 1fr 1fr auto; }
+.date-metric { min-width: 92px; }
+.as-of { color: #637083; font-size: 10px; font-weight: 600; line-height: 1.2; white-space: nowrap; }
 .invest-btn { min-width: 64px; padding: 0 12px; }
-.pop { color: #123b6d; font-size: 18px; font-weight: 700; }
 .up { color: #00a870; font-size: 18px; font-weight: 700; }
 .down { color: #e34d59; font-size: 18px; font-weight: 700; }
 .muted { color: #8a8f99; font-size: 11px; margin-top: 2px; }
