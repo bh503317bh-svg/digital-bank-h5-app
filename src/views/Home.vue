@@ -82,7 +82,7 @@
             <div class="skeleton sk-account-action" />
           </div>
         </div>
-        <div v-for="n in 2" :key="n" class="prod-row skeleton-prod-row">
+        <div v-for="n in 3" :key="n" class="prod-row skeleton-prod-row">
           <div class="prod-left">
             <div class="prod-icon"><div class="skeleton sk-product-icon" /></div>
             <div class="skeleton-copy">
@@ -255,7 +255,7 @@ onMounted(() => {
   height: 14px; margin-top: 12px; display: flex; align-items: center; justify-content: space-between;
   color: #8a8f99; font-size: 12px;
 }
-.ccy-strip { display: flex; gap: 9px; margin: 15px -18px -18px; padding: 13px 18px 16px; overflow-x: auto; border-top: 1px solid #edf0f3; scrollbar-width: none; scroll-snap-type: x proximity; }.ccy-strip::-webkit-scrollbar { display: none; }
+.ccy-strip { display: flex; gap: 9px; margin: 15px -18px -18px; padding: 13px 18px 16px; overflow-x: auto; border-top: 1px solid #edf0f3; scrollbar-width: none; scroll-snap-type: x proximity; touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch; }.ccy-strip::-webkit-scrollbar { display: none; }
 .ccy-card { width: 142px; min-width: 142px; height: 80px; padding: 11px 11px 10px; border: 1px solid #e6ebf0; border-radius: 12px; background: linear-gradient(145deg,#fff,#f7f9fb); box-shadow: 0 3px 10px rgba(15,39,68,.04); scroll-snap-align: start; }
 .ccy-card-top { display: flex; align-items: baseline; min-width: 0; gap: 5px; }.ccy-card-top strong { color: #123b6d; font-size: 11px; letter-spacing: .4px; }.ccy-card-top span { min-width: 0; overflow: hidden; color: #8a95a4; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
 .ccy-bal { margin-top: 8px; overflow: hidden; color: #153f70; }:deep(.ccy-bal .size-sm) { max-width: 100%; font-size: 16px; }:deep(.ccy-bal .decimal) { font-size: 10px; }
@@ -268,7 +268,7 @@ onMounted(() => {
 }
 .banner-title { font-size: 15px; font-weight: 600; padding-right: 70px; }
 .banner-sub { margin: 6px 0 12px; color: #8a8f99; font-size: 12px; }
-.product-list { height: 222px; margin-top: 12px; padding: 4px 12px; overflow: hidden; }
+.product-list { min-height: 294px; margin-top: 12px; padding: 4px 12px; }
 .skeleton-copy { min-width:118px; }.skeleton-name { width:104px;height:14px; }.skeleton-sub { width:132px;height:10px;margin-top:6px; }.sk-account-icon { width:38px;height:38px;border-radius:10px; }.sk-product-icon { width:44px;height:44px;border-radius:10px; }.sk-account-action { width:72px;height:33px;border-radius:10px; }.sk-prod-rate { width:82px; }.sk-rate { width:72px;height:20px;margin-left:auto; }.sk-rate-label { width:82px;height:10px;margin-top:5px; }
 .prod-row {
   display: flex; align-items: center; justify-content: space-between;
