@@ -94,7 +94,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { showFailToast, showSuccessToast } from 'vant'
@@ -117,20 +117,21 @@ const rate = computed(() => String(route.query.rate || ''))
 const product = computed(() => { locale.value; return localizeWealthProducts(t).find((item) => item.id === productId.value) })
 const productRisk = computed(() => product.value?.risk || t('wealthBuy.riskMedium'))
 const productHold = computed(() => product.value?.hold || t('wealthBuy.flexible'))
+const assistantOrder = computed(() => route.query.assistant === 'gold' && route.query.terms === 'accepted')
 const steps = computed(() => [t('wealthBuy.stepProduct'), t('wealthBuy.stepDetails'), t('wealthBuy.stepReview'), t('wealthBuy.stepComplete')])
 const currentStep = computed(() => showReview.value ? 2 : 1)
 const accounts = ref([])
 const accountNo = ref('')
 const balance = ref('0')
-const amount = ref('100')
+const amount = ref(String(route.query.amount || '100'))
 const presets = [100, 500, 1000]
 const loading = ref(false)
 const openingAccount = ref(false)
 const showPicker = ref(false)
 const showReview = ref(false)
 const payPwd = ref(null)
-const riskAck = ref(!!getKyc().riskAck)
-const documentAck = ref(false)
+const riskAck = ref(assistantOrder.value || !!getKyc().riskAck)
+const documentAck = ref(assistantOrder.value)
 const riskError = ref(false)
 const documentError = ref(false)
 const validAmount = computed(() => Number(amount.value) || 0)
@@ -171,6 +172,11 @@ onMounted(async () => {
   if (res.code === 0 && res.data.accounts?.length) {
     accounts.value = res.data.accounts.filter((a) => (a.currency || 'USD') === 'USD')
     applyAccount(accounts.value[0])
+    if (assistantOrder.value && route.query.autoReview === '1' && canReview.value && getKyc().status === 'verified') {
+      await nextTick()
+      saveKyc({ riskAck: true })
+      showReview.value = true
+    }
   }
 })
 

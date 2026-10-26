@@ -1,5 +1,6 @@
 <template>
   <router-view />
+  <AssistantWidget v-if="auth.token && route.path !== '/login'" />
   <van-tabbar v-if="showTab" route safe-area-inset-bottom active-color="#123b6d" inactive-color="#8793a4">
     <van-tabbar-item v-for="item in tabs" :key="item.key" replace :to="item.to">
       <template #icon>
@@ -18,6 +19,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import FeatureIcon from './components/FeatureIcon.vue'
+import AssistantWidget from './components/AssistantWidget.vue'
 import { useAuthStore } from './stores/auth'
 import { avatarFor } from './profile'
 
