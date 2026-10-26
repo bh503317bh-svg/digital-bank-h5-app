@@ -56,7 +56,7 @@
       </div>
 
       <div v-if="home" class="product-list wb-card">
-        <div class="prod-row">
+        <div class="prod-row account-row">
           <div class="prod-left">
             <div class="prod-icon"><FeatureIcon name="card" /></div>
             <div>
@@ -240,6 +240,7 @@ onMounted(() => {
 }
 .prod-name { font-size: 15px; font-weight: 600; }
 .prod-actions { display: flex; flex: 0 0 auto; gap: 7px; }.prod-actions .pill-btn { max-width: 92px; overflow: hidden; text-overflow: ellipsis; }
+.account-row .prod-left { gap: 8px; }.account-row .prod-icon { width: 38px; height: 38px; }.account-row .prod-name { font-size: 14px; white-space: nowrap; }.account-row .prod-actions { gap: 6px; }.account-row .prod-actions .pill-btn { height: 33px; padding: 0 10px; font-size: 10px; }
 .prod-rate { text-align: right; margin-left: 8px; }
 .prod-rate .rate { font-size: 20px; color: #00a870; }
 .tiny { font-size: 11px; }
