@@ -21,11 +21,11 @@ export default {
     mine: 'Me'
   },
   assistant: {
-    title: 'aku Assistant',
+    title: 'aku-bank Assistant',
     holdToTalk: 'Hold to talk',
     composeHelp: 'Type a request or choose a shortcut',
     quickActions: 'Quick actions',
-    placeholder: 'Ask aku Assistant…',
+    placeholder: 'Ask aku-bank Assistant…',
     send: 'Send',
     listening: 'Listening…',
     voiceReady: 'Voice assistant',
@@ -41,7 +41,7 @@ export default {
     goldShortcut: 'Buy Gold · $100',
     spyShortcut: 'Buy SPY · $300',
     highYieldShortcut: 'Find high-yield products',
-    advisorTitle: 'Wealth advisor',
+    advisorTitle: 'aku-bank Wealth Advisor',
     advisorSubtitle: 'A few options based on your request',
     chooseProduct: 'I found several higher-return products. Which one would you like to invest in?',
     typing: 'Wealth advisor is typing',

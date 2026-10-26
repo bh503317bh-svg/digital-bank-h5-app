@@ -21,11 +21,11 @@ export default {
     mine: '我的'
   },
   assistant: {
-    title: 'aku 智能助理',
+    title: 'aku-bank 智能助理',
     holdToTalk: '长按说话',
     composeHelp: '输入指令或选择快捷操作',
     quickActions: '快捷输入',
-    placeholder: '向 aku 助理提问…',
+    placeholder: '向 aku-bank 助理提问…',
     send: '发送',
     listening: '正在聆听…',
     voiceReady: '语音助理',
@@ -41,7 +41,7 @@ export default {
     goldShortcut: 'Buy Gold · $100',
     spyShortcut: '买入 SPY · $300',
     highYieldShortcut: '查找高收益理财',
-    advisorTitle: '理财顾问',
+    advisorTitle: 'aku-bank 理财顾问',
     advisorSubtitle: '根据你的需求筛选了几个选项',
     chooseProduct: '我找到了几款收益相对较高的产品，你想购买哪一款？',
     typing: '理财顾问正在输入',
