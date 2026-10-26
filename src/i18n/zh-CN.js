@@ -44,6 +44,7 @@ export default {
     advisorTitle: '理财顾问',
     advisorSubtitle: '根据你的需求筛选了几个选项',
     chooseProduct: '我找到了几款收益相对较高的产品，你想购买哪一款？',
+    typing: '理财顾问正在输入',
     needBuyIntent: '请使用英文 Buy、Purchase 或 Invest 开始指令。',
     unsupportedProduct: '目前支持 QQQ、GLD/Gold、SPY、VTI 和 IBB。',
     needAmount: '请在英文指令中包含美元金额，例如 “for 500 dollars”。',
