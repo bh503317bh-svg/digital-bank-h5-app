@@ -43,7 +43,7 @@
             </template>
           </div>
           <div class="composer recommend-composer">
-            <input ref="inputEl" v-model="message" :placeholder="t('assistant.placeholder')" enterkeyhint="send" @keyup.enter="submit" />
+            <input ref="inputEl" v-model="message" :placeholder="t('assistant.placeholder')" enterkeyhint="send" @focus="keepComposerVisible" @keyup.enter="submit" />
             <button type="button" :disabled="!message.trim() || recommendationTyping" :aria-label="t('assistant.send')" @click="submit"><van-icon name="guide-o" /></button>
           </div>
         </template>
@@ -57,7 +57,7 @@
             </div>
           </div>
           <div v-else-if="voiceStage === 'editing'" class="composer voice-edit">
-            <input ref="inputEl" v-model="message" :aria-label="t('assistant.placeholder')" enterkeyhint="send" @keyup.enter="submit" />
+            <input ref="inputEl" v-model="message" :aria-label="t('assistant.placeholder')" enterkeyhint="send" @focus="keepComposerVisible" @keyup.enter="submit" />
             <button type="button" :disabled="!message.trim()" :aria-label="t('assistant.send')" @click="submit"><van-icon name="guide-o" /></button>
           </div>
           <div v-else-if="voiceStage === 'error'" class="recognized-state error">
@@ -86,7 +86,7 @@
             <button type="button" @click="useCommand(t('assistant.highYieldCommand'))"><b><van-icon name="chart-trending-o" /></b><span>{{ t('assistant.highYieldShortcut') }}</span></button>
           </div>
           <div class="composer">
-            <input ref="inputEl" v-model="message" :placeholder="t('assistant.placeholder')" enterkeyhint="send" @keyup.enter="submit" />
+            <input ref="inputEl" v-model="message" :placeholder="t('assistant.placeholder')" enterkeyhint="send" @focus="keepComposerVisible" @keyup.enter="submit" />
             <button type="button" :disabled="!message.trim()" :aria-label="t('assistant.send')" @click="submit"><van-icon name="guide-o" /></button>
           </div>
           <div v-if="hint" class="assistant-hint">{{ hint }}</div>
@@ -177,6 +177,15 @@ function openComposer() {
   panelOpen.value = true
   hint.value = ''
   nextTick(() => inputEl.value?.focus())
+}
+
+function keepComposerVisible() {
+  window.setTimeout(() => inputEl.value?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' }), 180)
+}
+
+function dismissKeyboard() {
+  const active = document.activeElement
+  if (active instanceof HTMLElement && active.matches('input, textarea, [contenteditable="true"]')) active.blur()
 }
 
 function onPointerDown(event) {
@@ -287,6 +296,7 @@ function isRecommendationRequest(text) {
 }
 
 function chooseRecommendation(product) {
+  dismissKeyboard()
   panelOpen.value = false
   phase.value = 'compose'
   preserveOnNextRoute = true
@@ -347,6 +357,7 @@ function resolveIntent(text) {
 function submit() {
   const text = message.value.trim()
   if (!text || recommendationTyping.value) return
+  dismissKeyboard()
   openIntentConversation(text)
 }
 
@@ -372,6 +383,7 @@ function continueOrder() {
 function reset() {
   window.clearTimeout(agreementTimer)
   window.clearTimeout(recommendationTimer)
+  dismissKeyboard()
   panelOpen.value = false
   phase.value = 'compose'
   hint.value = ''
@@ -390,7 +402,14 @@ function reset() {
 }
 
 function closeOnOutsidePress(event) {
-  if (panelOpen.value && !dockEl.value?.contains(event.target)) reset()
+  if (!panelOpen.value) return
+  if (!dockEl.value?.contains(event.target)) {
+    reset()
+    return
+  }
+  const target = event.target
+  const isEditable = target instanceof Element && target.closest('input, textarea, [contenteditable="true"]')
+  if (!isEditable) dismissKeyboard()
 }
 
 watch(() => route.fullPath, () => {
