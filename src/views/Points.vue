@@ -14,13 +14,13 @@
         </div>
         <div class="right">
           <div class="muted">{{ t('points.cashBal') }}</div>
-          <div class="cash">{{ money(cashBalance) }}</div>
+          <div class="cash"><MoneyAmount :value="cashBalance" currency="USD" size="md" tone="primary" /></div>
         </div>
       </div>
       <div class="tip">{{ t('points.rule') }}</div>
     </div>
 
-    <van-tabs v-model:active="tab" color="#0052d9" sticky>
+    <van-tabs v-model:active="tab" color="#123b6d" sticky>
       <van-tab :title="t('points.mall')">
         <div class="cats">
           <span
@@ -39,7 +39,7 @@
               <span class="or">{{ t('points.or') }}</span>
               <span>{{ p.price_points }}{{ t('points.unit') }}</span>
             </div>
-            <van-button size="mini" color="#0052d9" round>{{ t('points.buy') }}</van-button>
+            <van-button size="mini" color="#123b6d" round>{{ t('points.buy') }}</van-button>
           </div>
         </div>
       </van-tab>
@@ -87,7 +87,7 @@
         <div class="summary">
           {{ t('points.willPay') }}：{{ payPoints }}{{ t('points.unit') }} + {{ money(payCash) }}
         </div>
-        <van-button block round color="#0052d9" :loading="loading" @click="confirmBuy">
+        <van-button block round color="#123b6d" :loading="loading" @click="confirmBuy">
           {{ t('points.confirm') }}
         </van-button>
       </div>
@@ -105,6 +105,7 @@ import { useI18n } from 'vue-i18n'
 import { showFailToast } from 'vant'
 import { fetchHome, shopBuy, shopCatalog, shopOrders } from '../api'
 import PayPassword from '../components/PayPassword.vue'
+import MoneyAmount from '../components/MoneyAmount.vue'
 import { money } from '../utils'
 import { getPoints, pushNotice, setPoints } from '../utils/local'
 import { openResult } from '../utils/result'
@@ -282,12 +283,12 @@ onMounted(load)
 </script>
 
 <style scoped>
-:deep(.van-nav-bar) { background: #0052d9; }
+:deep(.van-nav-bar) { background: #123b6d; }
 :deep(.van-nav-bar__title), :deep(.van-nav-bar .van-icon) { color: #fff !important; }
 .nav-link { color: #fff; font-size: 13px; padding-right: 4px; }
 .head { margin: 12px; padding: 16px; }
 .cols { display: flex; justify-content: space-between; gap: 12px; }
-.num { font-size: 32px; font-weight: 800; color: #0052d9; margin-top: 4px; }
+.num { font-size: 32px; font-weight: 800; color: #123b6d; margin-top: 4px; }
 .cash { font-size: 22px; font-weight: 700; margin-top: 4px; }
 .right { text-align: right; }
 .tip { margin-top: 10px; font-size: 12px; color: #8a8f99; line-height: 1.4; }
@@ -295,7 +296,7 @@ onMounted(load)
 .chip {
   padding: 6px 12px; border-radius: 14px; background: #f3f5f9; font-size: 12px; color: #666;
 }
-.chip.on { background: #e8f1ff; color: #0052d9; font-weight: 600; }
+.chip.on { background: #e8f1ff; color: #123b6d; font-weight: 600; }
 .grid {
   display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 12px 24px;
 }
@@ -308,7 +309,7 @@ onMounted(load)
 .sheet { padding: 12px 16px 28px; }
 .need { margin: 10px 0; font-weight: 600; }
 .modes { display: flex; gap: 8px; margin: 10px 0 6px; flex-wrap: wrap; }
-.summary { margin: 12px 0; font-size: 14px; font-weight: 600; color: #0052d9; }
+.summary { margin: 12px 0; font-size: 14px; font-weight: 600; color: #123b6d; }
 .list { margin: 12px; padding: 4px 14px; }
 .order { padding: 14px 0; border-bottom: 1px solid #f0f2f5; }
 .oname { font-weight: 700; }

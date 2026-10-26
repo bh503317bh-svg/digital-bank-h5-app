@@ -14,7 +14,7 @@
 
     <div v-if="!filtered.length" class="empty">
       <div>{{ t('notices.empty') }}</div>
-      <van-button size="small" round color="#0052d9" style="margin-top:12px" @click="seed">
+      <van-button size="small" round color="#123b6d" style="margin-top:12px" @click="seed">
         {{ t('notices.loadDemo') }}
       </van-button>
     </div>
@@ -125,14 +125,14 @@ onMounted(() => {
 </script>
 
 <style scoped>
-:deep(.van-nav-bar) { background: #0052d9; }
+:deep(.van-nav-bar) { background: #123b6d; }
 :deep(.van-nav-bar__title), :deep(.van-nav-bar .van-icon) { color: #fff !important; }
 .nav-act { color: #fff; font-size: 13px; padding-right: 4px; }
 .tabs { display: flex; gap: 8px; padding: 12px; }
 .tab {
   padding: 6px 14px; border-radius: 14px; background: #fff; font-size: 12px; color: #666;
 }
-.tab.on { background: #e8f1ff; color: #0052d9; font-weight: 700; }
+.tab.on { background: #e8f1ff; color: #123b6d; font-weight: 700; }
 .list { margin: 0 12px 12px; padding: 4px 10px; }
 .row { display: flex; gap: 10px; padding: 14px 4px; border-bottom: 1px solid #f0f2f5; }
 .dot {

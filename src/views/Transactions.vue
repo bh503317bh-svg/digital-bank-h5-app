@@ -14,7 +14,7 @@
     <div v-else-if="!filtered.length" class="empty-box">
       <div class="icon">☰</div>
       <div>{{ t('txn.empty') }}</div>
-      <van-button size="small" color="#0052d9" round style="margin-top:12px" @click="$router.push('/transfer-in')">
+      <van-button size="small" color="#123b6d" round style="margin-top:12px" @click="$router.push('/transfer-in')">
         {{ t('txn.goTransfer') }}
       </van-button>
     </div>
@@ -24,9 +24,7 @@
           <div class="title">{{ item.remark || (item.direction === 'in' ? t('txn.in') : t('txn.out')) }}</div>
           <div class="time">{{ item.created_at }}</div>
         </div>
-        <div class="amt" :class="item.direction === 'in' ? 'in' : 'out'">
-          {{ signed(item) }}
-        </div>
+        <MoneyAmount class="amt" :value="item.amount" :currency="currency" :signed="item.direction === 'in' ? '+' : '−'" :tone="item.direction === 'in' ? 'positive' : 'negative'" size="sm" />
       </div>
     </div>
 
@@ -41,7 +39,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { fetchHome, fetchLedgers } from '../api'
-import { money } from '../utils'
+import MoneyAmount from '../components/MoneyAmount.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -82,11 +80,6 @@ function cycleDir() {
   dirMode.value = (dirMode.value + 1) % 3
 }
 
-function signed(item) {
-  const sign = item.direction === 'in' ? '+' : '-'
-  return `${sign}${money(item.amount, { currency: currency.value })}`
-}
-
 onMounted(async () => {
   try {
     const home = await fetchHome()
@@ -108,7 +101,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-:deep(.van-nav-bar) { background: #0052d9; }
+:deep(.van-nav-bar) { background: #123b6d; }
 :deep(.van-nav-bar__title), :deep(.van-nav-bar .van-icon) { color: #fff !important; }
 .filter-bar {
   display: flex; background: #fff; height: 44px; align-items: center;
@@ -123,8 +116,6 @@ onMounted(async () => {
 }
 .title { font-size: 15px; }
 .time { margin-top: 4px; font-size: 12px; color: #8a8f99; }
-.amt { font-size: 16px; font-weight: 600; }
-.amt.in { color: #00a870; }
-.amt.out { color: #e34d59; }
+.amt { flex: 0 0 auto; margin-left: 12px; }
 .svc { padding: 16px; font-size: 14px; line-height: 1.6; }
 </style>

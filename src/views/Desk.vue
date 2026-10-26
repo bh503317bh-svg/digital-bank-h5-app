@@ -10,7 +10,7 @@
         <van-field v-model="form.bank" :label="t('transfer.bankName')" placeholder="DBS" />
         <van-field v-model="form.country" :label="t('transfer.bankCountry')" placeholder="SG" />
       </van-cell-group>
-      <div class="pad"><van-button block round color="#0052d9" @click="onSavePayee">{{ t('desk.savePayee') }}</van-button></div>
+      <div class="pad"><van-button block round color="#123b6d" @click="onSavePayee">{{ t('desk.savePayee') }}</van-button></div>
       <div class="wb-card list">
         <div v-if="!payees.length" class="empty">{{ t('desk.emptyPayee') }}</div>
         <div v-for="p in payees" :key="p.id" class="row">
@@ -32,7 +32,7 @@
             <div class="name">{{ o.name || o.account }} · {{ o.amount }}</div>
             <div class="muted">{{ o.kind }} · {{ o.status }} · {{ o.at?.slice(0, 16).replace('T', ' ') }}</div>
           </div>
-          <van-button v-if="o.status === 'review'" size="small" color="#0052d9" @click="release(o)">{{ t('desk.release') }}</van-button>
+          <van-button v-if="o.status === 'review'" size="small" color="#123b6d" @click="release(o)">{{ t('desk.release') }}</van-button>
         </div>
       </div>
     </template>
@@ -45,7 +45,7 @@
         <van-field v-model="sched.account" :label="t('transfer.to')" />
         <van-field v-model="sched.swift" :label="t('transfer.swift')" placeholder="SCBLSGSG" />
       </van-cell-group>
-      <div class="pad"><van-button block round color="#0052d9" @click="onSchedule">{{ t('desk.saveSched') }}</van-button></div>
+      <div class="pad"><van-button block round color="#123b6d" @click="onSchedule">{{ t('desk.saveSched') }}</van-button></div>
       <div class="wb-card list">
         <div v-if="!schedules.length" class="empty">{{ t('desk.emptySched') }}</div>
         <div v-for="s in schedules" :key="s.id" class="row">
@@ -53,7 +53,7 @@
             <div class="name">{{ s.date }} · {{ s.amount }}</div>
             <div class="muted">{{ s.name }} · {{ s.status }}</div>
           </div>
-          <van-button v-if="s.status === 'scheduled'" size="small" color="#0052d9" @click="runSchedule(s)">{{ t('desk.runNow') }}</van-button>
+          <van-button v-if="s.status === 'scheduled'" size="small" color="#123b6d" @click="runSchedule(s)">{{ t('desk.runNow') }}</van-button>
         </div>
       </div>
     </template>
@@ -63,7 +63,7 @@
       <van-cell-group inset>
         <van-field v-for="(line, i) in batch" :key="i" v-model="line.amount" :label="line.name || t('desk.line', { n: i + 1 })" placeholder="10.00" />
       </van-cell-group>
-      <div class="pad"><van-button block round color="#0052d9" :loading="busy" @click="runBatch">{{ t('desk.runBatch') }}</van-button></div>
+      <div class="pad"><van-button block round color="#123b6d" :loading="busy" @click="runBatch">{{ t('desk.runBatch') }}</van-button></div>
     </template>
 
     <template v-else-if="kind === 'fx'">
@@ -81,7 +81,7 @@
         <van-field v-model="fx.amount" :label="t('transfer.amount')" placeholder="100" />
       </van-cell-group>
       <div class="hint" v-if="fxQuote">1 {{ fx.from }} = {{ fxQuote.rate }} {{ fx.to }} → {{ fxQuote.out }}</div>
-      <div class="pad"><van-button block round color="#0052d9" :loading="busy" @click="runFx">{{ t('desk.convert') }}</van-button></div>
+      <div class="pad"><van-button block round color="#123b6d" :loading="busy" @click="runFx">{{ t('desk.convert') }}</van-button></div>
     </template>
 
     <template v-else-if="kind === 'kyc'">
@@ -96,7 +96,7 @@
       <van-cell-group inset style="margin-top:12px">
         <van-cell :title="t('desk.faceTitle')" :value="faceOk ? t('desk.facePassed') : t('desk.faceStart')" is-link @click="showFace = true" />
       </van-cell-group>
-      <div class="pad"><van-button block round color="#0052d9" @click="onKyc">{{ t('desk.submitKyc') }}</van-button></div>
+      <div class="pad"><van-button block round color="#123b6d" @click="onKyc">{{ t('desk.submitKyc') }}</van-button></div>
       <FaceScan v-model:show="showFace" @done="onFaceDone" />
     </template>
 
@@ -109,7 +109,7 @@
         <van-field v-model="pay.amount" :label="t('transfer.amount')" placeholder="12.00" />
       </van-cell-group>
       <div class="hint">{{ t('desk.payHint') }}</div>
-      <div class="pad"><van-button block round color="#0052d9" :loading="busy" @click="runPay">{{ t('desk.payNow') }}</van-button></div>
+      <div class="pad"><van-button block round color="#123b6d" :loading="busy" @click="runPay">{{ t('desk.payNow') }}</van-button></div>
     </template>
 
     <template v-else-if="kind === 'bills'">
@@ -119,7 +119,7 @@
             <div class="name">{{ t(b.nameKey) }}</div>
             <div class="muted">{{ b.payee }} · {{ b.amount }} {{ b.ccy }} · {{ b.status }}</div>
           </div>
-          <van-button v-if="b.status !== 'paid'" size="small" color="#0052d9" @click="payBill(b)">{{ t('desk.payNow') }}</van-button>
+          <van-button v-if="b.status !== 'paid'" size="small" color="#123b6d" @click="payBill(b)">{{ t('desk.payNow') }}</van-button>
         </div>
       </div>
       <div class="section-hd"><span>{{ t('desk.disputes') }}</span></div>
@@ -127,7 +127,7 @@
         <van-field v-model="dispute.ref" :label="t('desk.ref')" placeholder="TXN / card" />
         <van-field v-model="dispute.reason" :label="t('desk.reason')" :placeholder="t('desk.reasonPh')" />
       </van-cell-group>
-      <div class="pad"><van-button block round plain color="#0052d9" @click="onDispute">{{ t('desk.openDispute') }}</van-button></div>
+      <div class="pad"><van-button block round plain color="#123b6d" @click="onDispute">{{ t('desk.openDispute') }}</van-button></div>
       <div class="wb-card list">
         <div v-for="d in disputes" :key="d.id" class="row">
           <div>
@@ -146,7 +146,7 @@
             <div class="name">{{ h.name }}</div>
             <div class="muted">{{ money(h.amount) }} · {{ h.rate }}</div>
           </div>
-          <van-button size="small" color="#0052d9" @click="onRedeem(h)">{{ t('desk.redeem') }}</van-button>
+          <van-button size="small" color="#123b6d" @click="onRedeem(h)">{{ t('desk.redeem') }}</van-button>
         </div>
       </div>
     </template>
@@ -689,7 +689,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-:deep(.van-nav-bar) { background: #0052d9; }
+:deep(.van-nav-bar) { background: #123b6d; }
 :deep(.van-nav-bar__title), :deep(.van-nav-bar .van-icon) { color: #fff !important; }
 .desk { padding-bottom: 28px; }
 .pad { margin: 16px; }
@@ -705,6 +705,6 @@ onMounted(async () => {
 .pockets { display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; color: #555; }
 .rails { display: flex; gap: 8px; padding: 12px 16px 0; flex-wrap: wrap; }
 .rails button { border: 0; background: #fff; border-radius: 16px; padding: 6px 12px; }
-.rails button.on { background: #0052d9; color: #fff; }
+.rails button.on { background: #123b6d; color: #fff; }
 .lang { display: flex; gap: 8px; }
 </style>

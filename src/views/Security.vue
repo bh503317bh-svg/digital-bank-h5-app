@@ -20,17 +20,17 @@
       <van-cell :title="t('desk.faceTitle')" :label="faceLabel" is-link @click="showFace = true" />
       <van-cell :title="t('security.biometric')" :label="t('security.biometricDesc')">
         <template #right-icon>
-          <van-switch v-model="biometric" size="20px" active-color="#0052d9" @change="onBio" />
+          <van-switch v-model="biometric" size="20px" active-color="#123b6d" @change="onBio" />
         </template>
       </van-cell>
       <van-cell :title="t('desk.twoFa')" :label="otpLabel">
         <template #right-icon>
-          <van-switch v-model="twoFa" size="20px" active-color="#0052d9" @change="onTwoFa" />
+          <van-switch v-model="twoFa" size="20px" active-color="#123b6d" @change="onTwoFa" />
         </template>
       </van-cell>
       <van-cell :title="t('security.loginAlert')" :label="t('security.loginAlertDesc')">
         <template #right-icon>
-          <van-switch v-model="loginAlert" size="20px" active-color="#0052d9" @change="onAlert" />
+          <van-switch v-model="loginAlert" size="20px" active-color="#123b6d" @change="onAlert" />
         </template>
       </van-cell>
       <van-cell :title="t('security.changePwd')" is-link @click="onPwd" />
@@ -39,7 +39,7 @@
     </van-cell-group>
 
     <div style="margin:24px 16px">
-      <van-button round block type="primary" color="#0052d9" @click="onLock">{{ t('security.lock') }}</van-button>
+      <van-button round block type="primary" color="#123b6d" @click="onLock">{{ t('security.lock') }}</van-button>
     </div>
 
     <FaceScan v-model:show="showFace" @done="onFace" />
@@ -60,7 +60,7 @@
       <div class="pay-set">
         <van-field v-model="loginPwd" type="password" :label="t('login.password')" :placeholder="t('payPwd.loginPh')" />
         <van-field v-model="newPayPwd" type="password" :label="t('payPwd.new')" :placeholder="t('payPwd.ph')" maxlength="12" />
-        <van-button block round color="#0052d9" style="margin-top:12px" @click="savePayPwd">{{ t('mine.saveProfile') }}</van-button>
+        <van-button block round color="#123b6d" style="margin-top:12px" @click="savePayPwd">{{ t('mine.saveProfile') }}</van-button>
       </div>
     </van-action-sheet>
   </div>
@@ -224,12 +224,12 @@ async function onLock() {
 </script>
 
 <style scoped>
-:deep(.van-nav-bar) { background: #0052d9; }
+:deep(.van-nav-bar) { background: #123b6d; }
 :deep(.van-nav-bar__title), :deep(.van-nav-bar .van-icon) { color: #fff !important; }
 .summary {
   margin: 12px; padding: 20px; text-align: center;
 }
-.score { font-size: 40px; font-weight: 800; color: #0052d9; }
+.score { font-size: 40px; font-weight: 800; color: #123b6d; }
 .label { margin-top: 4px; font-weight: 700; }
 .tip { margin-top: 6px; font-size: 12px; color: #8a8f99; }
 .section-hd { padding: 16px 20px 8px; font-weight: 700; }

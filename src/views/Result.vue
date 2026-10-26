@@ -68,8 +68,8 @@
     </div>
 
     <div v-if="phase === 'done'" class="actions">
-      <van-button block round :color="receipt.ok ? '#0052d9' : '#e34d59'" @click="finish">{{ t('result.done') }}</van-button>
-      <van-button v-if="isTxn" block round plain color="#0052d9" style="margin-top:10px" @click="$router.replace('/transactions')">
+      <van-button block round :color="receipt.ok ? '#123b6d' : '#e34d59'" @click="finish">{{ t('result.done') }}</van-button>
+      <van-button v-if="isTxn" block round plain color="#123b6d" style="margin-top:10px" @click="$router.replace('/transactions')">
         {{ t('result.activity') }}
       </van-button>
     </div>
@@ -169,7 +169,7 @@ onBeforeUnmount(() => { alive = false })
 
 <style scoped>
 .result { min-height: 100vh; background: #f4f6fa; padding: 28px 16px 32px; text-align: center; }
-.brand { color: #0052d9; font-weight: 800; letter-spacing: 0.6px; }
+.brand { color: #123b6d; font-weight: 800; letter-spacing: 0.6px; }
 .amount { margin-top: 14px; font-size: 34px; font-weight: 800; }
 .headline { margin-top: 6px; font-size: 18px; font-weight: 800; }
 .sub { margin-top: 4px; color: #8a8f99; font-size: 13px; }
@@ -187,7 +187,7 @@ onBeforeUnmount(() => { alive = false })
 }
 .mini i {
   position: absolute; inset: 0; border-radius: 50%;
-  border: 3px solid #d6e4ff; border-top-color: #0052d9; border-right-color: #0052d9;
+  border: 3px solid #d6e4ff; border-top-color: #123b6d; border-right-color: #123b6d;
   animation: spin 0.7s linear infinite;
 }
 .badge {
@@ -210,7 +210,7 @@ onBeforeUnmount(() => { alive = false })
 .line b { font-weight: 600; text-align: right; word-break: break-all; }
 .good { color: #00a870; }
 .bad { color: #e34d59; }
-.waitc { color: #0052d9; }
+.waitc { color: #123b6d; }
 .actions { margin-top: 22px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 </style>

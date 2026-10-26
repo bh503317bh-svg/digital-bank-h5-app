@@ -10,7 +10,7 @@
     </div>
     <div class="grid">
       <div v-for="item in items" :key="item.title" class="wb-card item" @click="$router.push(item.to)">
-        <div class="icon"><van-icon :name="item.icon" size="26" /></div>
+        <div class="icon"><FeatureIcon :name="item.art" /></div>
         <div class="t">{{ item.title }}</div>
         <div class="d">{{ item.desc }}</div>
       </div>
@@ -21,16 +21,17 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import FeatureIcon from '../components/FeatureIcon.vue'
 
 const { t, locale } = useI18n()
 
 const items = computed(() => {
   locale.value
   return [
-    { icon: 'gift-o', title: t('rights.benefit'), desc: t('rights.benefitDesc'), to: '/newbie' },
-    { icon: 'fire-o', title: t('rights.newbie'), desc: t('rights.newbieDesc'), to: '/newbie' },
-    { icon: 'friends-o', title: t('rights.invite'), desc: t('rights.inviteDesc'), to: '/invite' },
-    { icon: 'points', title: t('rights.points'), desc: t('rights.pointsDesc'), to: '/points' }
+    { art: 'benefits', title: t('rights.benefit'), desc: t('rights.benefitDesc'), to: '/newbie' },
+    { art: 'wealth', title: t('rights.newbie'), desc: t('rights.newbieDesc'), to: '/newbie' },
+    { art: 'invite', title: t('rights.invite'), desc: t('rights.inviteDesc'), to: '/invite' },
+    { art: 'points', title: t('rights.points'), desc: t('rights.pointsDesc'), to: '/points' }
   ]
 })
 </script>
@@ -46,9 +47,9 @@ const items = computed(() => {
 }
 .item { padding: 16px; min-height: 120px; }
 .icon {
-  width: 36px; height: 36px; border-radius: 12px; background: #e8f1ff; color: #0052d9;
+  width: 52px; height: 52px;
   display: flex; align-items: center; justify-content: center; font-weight: 700;
 }
-.t { margin-top: 12px; font-weight: 700; }
+.t { margin-top: 8px; font-weight: 700; }
 .d { margin-top: 4px; font-size: 12px; color: #8a8f99; }
 </style>

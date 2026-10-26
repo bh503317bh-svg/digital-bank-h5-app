@@ -8,7 +8,7 @@
     </van-nav-bar>
 
     <div class="hero">
-      <div class="hero-icon" aria-hidden="true" />
+      <div class="hero-icon" aria-hidden="true"><FeatureIcon name="transfer" /></div>
       <div class="hero-title" @click="goForm('wire')">{{ t('transfer.hubWire') }}</div>
       <div class="hero-sub">
         <button type="button" @click="goForm('phone')">{{ t('transfer.hubPhone') }}</button>
@@ -78,6 +78,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { showToast } from 'vant'
 import { fetchHome } from '../api'
+import FeatureIcon from '../components/FeatureIcon.vue'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -101,7 +102,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-:deep(.van-nav-bar) { background: #0052d9; }
+:deep(.van-nav-bar) { background: #123b6d; }
 :deep(.van-nav-bar__title),
 :deep(.van-nav-bar .van-icon) { color: #fff !important; }
 .tout { background: #f5f6f8; min-height: 100vh; }
@@ -110,17 +111,10 @@ onMounted(async () => {
   padding: 28px 16px 20px; text-align: center;
 }
 .hero-icon {
-  width: 56px; height: 40px; margin: 0 auto;
-  border-radius: 6px; background: linear-gradient(135deg, #0052d9, #3d7eff);
-  box-shadow: 0 6px 14px rgba(0, 82, 217, 0.28);
-  position: relative;
-}
-.hero-icon::after {
-  content: ''; position: absolute; left: 8px; right: 8px; bottom: 10px;
-  height: 3px; border-radius: 2px; background: rgba(255,255,255,.55);
+  width: 72px; height: 72px; margin: -6px auto 0;
 }
 .hero-title {
-  margin-top: 12px; font-size: 17px; font-weight: 700; color: #0052d9;
+  margin-top: 12px; font-size: 17px; font-weight: 700; color: #123b6d;
 }
 .hero-sub {
   margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 16px;
@@ -142,12 +136,12 @@ onMounted(async () => {
   display: flex; align-items: center; justify-content: center; font-size: 18px;
 }
 .mi-ico.orange { background: #fff3e8; }
-.mi-ico.blue { background: #e8f1ff; color: #0052d9; font-weight: 700; }
+.mi-ico.blue { background: #e8f1ff; color: #123b6d; font-weight: 700; }
 .mi-body { flex: 1; }
 .mi-title { font-size: 15px; font-weight: 600; color: #222; }
 .mi-sub { margin-top: 4px; font-size: 12px; color: #8a8f99; }
 .help {
   display: block; margin: 28px auto 0; border: 0; background: transparent;
-  color: #0052d9; font-size: 14px;
+  color: #123b6d; font-size: 14px;
 }
 </style>

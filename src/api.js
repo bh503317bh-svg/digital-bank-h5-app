@@ -24,6 +24,11 @@ export async function fetchHome() {
   return data
 }
 
+export async function openDepositAccount(currency = 'USD') {
+  const { data } = await http.post('/dp/accounts', { currency })
+  return data
+}
+
 export async function transfer(payload) {
   const { data } = await http.post('/app/transfer', payload, {
     headers: { 'Idempotency-Key': crypto.randomUUID() }

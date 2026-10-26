@@ -8,6 +8,7 @@ const router = createRouter({
     { path: '/login', component: () => import('./views/Login.vue'), meta: { tab: false } },
     { path: '/', name: 'account', component: () => import('./views/Home.vue'), meta: { tab: 'account' } },
     { path: '/wealth', name: 'wealth', component: () => import('./views/Wealth.vue'), meta: { tab: 'wealth' } },
+    { path: '/wealth/detail', name: 'wealthDetail', component: () => import('./views/WealthDetail.vue'), meta: { tab: false } },
     { path: '/wealth/buy', name: 'wealthBuy', component: () => import('./views/WealthBuy.vue'), meta: { tab: false } },
     { path: '/funds', name: 'funds', component: () => import('./views/Funds.vue'), meta: { tab: 'funds' } },
     { path: '/rights', name: 'rights', component: () => import('./views/Rights.vue'), meta: { tab: 'rights' } },
