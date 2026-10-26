@@ -72,7 +72,7 @@
                   <div class="muted">{{ t('funds.popScore') }}</div>
                 </div>
                 <div>
-                  <div :class="rateClass(f.w1)">{{ f.w1 }}</div>
+                  <div class="as-of">{{ f.asOf }}</div>
                   <div class="muted">{{ t('funds.w1') }}</div>
                 </div>
                 <div>
@@ -99,7 +99,7 @@
               </div>
               <div class="metrics">
                 <div>
-                  <div :class="rateClass(f.w1)">{{ f.w1 }}</div>
+                  <div class="as-of">{{ f.asOf }}</div>
                   <div class="muted">{{ t('funds.w1') }}</div>
                 </div>
                 <div>

@@ -18,18 +18,18 @@
       <div class="prod">
         <div>
           <div class="name">{{ t('newbie.hqPlusX') }} <span class="tag">{{ t('home.newbieTag') }}</span></div>
-          <div class="rate big">5.20%</div>
+          <div class="rate big">{{ hqPlusXRate }}</div>
           <div class="muted">{{ t('newbie.rateSince') }}</div>
         </div>
-        <van-button size="small" color="#123b6d" round @click="goBuy('hqPlusX', t('newbie.hqPlusX'), '5.20%')">{{ t('newbie.goBuy') }}</van-button>
+        <van-button size="small" color="#123b6d" round @click="goBuy('hqPlusX', t('newbie.hqPlusX'), hqPlusXRate)">{{ t('newbie.goBuy') }}</van-button>
       </div>
       <div class="prod" style="margin-top:14px">
         <div>
           <div class="name">{{ t('newbie.hqPlus') }}</div>
-          <div class="rate big">4.85%</div>
+          <div class="rate big">{{ hqPlusRate }}</div>
           <div class="muted">{{ t('newbie.rate7d') }}</div>
         </div>
-        <van-button size="small" color="#123b6d" round @click="goBuy('hqPlus', t('newbie.hqPlus'), '4.85%')">{{ t('newbie.goBuy') }}</van-button>
+        <van-button size="small" color="#123b6d" round @click="goBuy('hqPlus', t('newbie.hqPlus'), hqPlusRate)">{{ t('newbie.goBuy') }}</van-button>
       </div>
     </div>
 
@@ -47,7 +47,7 @@
         <div class="name">{{ t('newbie.gift1000') }} ›</div>
         <div class="muted">{{ t('newbie.gift1000Desc') }}</div>
       </div>
-      <div class="grow-item" @click="goBuy('hqPlusX', t('newbie.hqPlusX'), '5.20%')">
+      <div class="grow-item" @click="goBuy('hqPlusX', t('newbie.hqPlusX'), hqPlusXRate)">
         <div class="name">{{ t('newbie.giftAdvance') }} ›</div>
         <div class="muted">{{ t('newbie.giftAdvanceDesc') }}</div>
       </div>
@@ -59,12 +59,15 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { accountProductsMeta } from '../mock/products'
 import { openResult } from '../utils/result'
 import { getClaimed, getPoints, markClaimed, pushNotice, setPoints } from '../utils/local'
 
 const { t } = useI18n()
 const router = useRouter()
 const claimed = ref(!!getClaimed().learn5)
+const hqPlusRate = accountProductsMeta.find((product) => product.id === 'hqPlus')?.rate || '—'
+const hqPlusXRate = accountProductsMeta.find((product) => product.id === 'hqPlusX')?.rate || '—'
 
 function goBuy(id, name, rate) {
   router.push({ path: '/wealth/buy', query: { id, name, rate } })

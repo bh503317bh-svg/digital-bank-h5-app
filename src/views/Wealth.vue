@@ -38,17 +38,17 @@
       <div @click="$router.push('/newbie')"><span class="shortcut-icon"><FeatureIcon name="benefits" /></span><span>{{ t('wealth.hotAct') }}</span></div>
     </div>
 
-    <div class="wb-card promo" @click="goBuy({ id: 'hqPlusX', name: t('newbie.hqPlusX'), rate: '5.20%' })">
+    <div class="wb-card promo" @click="goBuy({ id: 'hqPlusX', name: t('newbie.hqPlusX'), rate: cashPromoRate })">
       <div>
         <div class="curated">{{ t('wealth.curated') }}</div>
         <div class="p-title">{{ t('wealth.promoTitle') }}</div>
-        <div class="rate big">5.20%</div>
+        <div class="rate big">{{ cashPromoRate }}</div>
         <div class="muted">{{ t('wealth.promoRateLabel') }}</div>
       </div>
       <van-button size="small" round>{{ t('wealth.viewProduct') }}</van-button>
     </div>
 
-    <div class="wb-card event" @click="goBuy({ id: 'w2', name: t('products.w2.name'), rate: '18.40%' })">
+    <div class="wb-card event" @click="goBuy({ id: 'w2', name: t('products.w2.name'), rate: vtiRate })">
       <div class="e-title">{{ t('wealth.eventTitle') }}</div>
       <div class="muted">{{ t('wealth.eventSub') }}</div>
       <div class="link">{{ t('wealth.buyNow') }} ›</div>
@@ -108,7 +108,7 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { showSuccessToast } from 'vant'
-import { localizeWealthProducts, wealthCategories } from '../mock/products'
+import { accountProductsMeta, localizeWealthProducts, wealthCategories, wealthProductMeta } from '../mock/products'
 import { getWatchlist, isWatched, toggleWatch } from '../utils/local'
 import FeatureIcon from '../components/FeatureIcon.vue'
 
@@ -120,6 +120,8 @@ const activeCat = ref('all')
 const showWatch = ref(false)
 const watchTick = ref(0)
 const listAnchor = ref(null)
+const cashPromoRate = accountProductsMeta.find((product) => product.id === 'hqPlusX')?.rate || '—'
+const vtiRate = wealthProductMeta.find((product) => product.id === 'w2')?.rate || '—'
 
 const cats = computed(() => {
   locale.value

@@ -374,10 +374,10 @@ export default {
     goTransfer: 'Transfer in',
     wealthGift: 'Wealth gift',
     goBuy: 'Buy now',
-    hqPlusX: 'Money Market Plus',
-    hqPlus: 'Money Market',
-    rateSince: '7-Day Yield (APY) · liquid · from $1',
-    rate7d: '7-Day Yield (APY) · same-day · from $0.01',
+    hqPlusX: 'Fidelity Government Money Market (SPAXX)',
+    hqPlus: 'Vanguard Federal Money Market (VMFXX)',
+    rateSince: '7-Day Yield · 25 Sep 2026 · liquid',
+    rate7d: '7-Day SEC Yield · 1 Oct 2026 · liquid',
     learnBar: 'Learn & claim $5 voucher',
     claim: 'Claim',
     claimed: 'Claimed successfully',
@@ -575,8 +575,8 @@ export default {
     sec_dividend: 'Dividend',
     sec_broad: 'Broad market',
     sec_asean: 'Southeast Asia',
-    w1: '1W return',
-    y1: '1Y return',
+    w1: 'As of',
+    y1: '1Y total return',
     buy: 'Invest',
     buyTitle: 'Invest',
     buyMsg: 'Buy {name}?',
@@ -622,29 +622,29 @@ export default {
   },
   products: {
     hqPlus: {
-      name: 'Money Market',
-      desc: 'Vanguard Federal MM style · high liquidity',
-      rateLabel: '7-Day Yield (APY)'
+      name: 'Vanguard Federal Money Market (VMFXX)',
+      desc: 'Federal money market fund · high liquidity',
+      rateLabel: '7-Day SEC Yield · 1 Oct 2026'
     },
     hqPlusX: {
-      name: 'Money Market Plus',
-      desc: 'Enhanced cash yield · new customers',
-      rateLabel: '7-Day Yield (APY)',
-      tag: 'New users'
+      name: 'Fidelity Government Money Market (SPAXX)',
+      desc: 'Government money market fund · daily liquidity',
+      rateLabel: '7-Day Yield · 25 Sep 2026',
+      tag: 'Cash fund'
     },
     gsPlus: {
-      name: 'US Aggregate Bond',
-      desc: 'Investment-grade US bonds / AGG style',
-      rateLabel: 'SEC Yield'
+      name: 'iShares Core U.S. Aggregate Bond (AGG)',
+      desc: 'Investment-grade U.S. bond ETF',
+      rateLabel: '30-Day SEC Yield · 30 Sep 2026'
     },
     w1: {
-      org: 'Fidelity',
-      name: 'Fidelity Conservative Income Bond',
-      tag: 'Multi-asset',
+      org: 'iShares',
+      name: 'Core U.S. Aggregate Bond ETF (AGG)',
+      tag: 'US Bond',
       rateLabel: '30-Day SEC Yield',
       hold: 'Redeem T+1',
       risk: 'Moderate | from $1',
-      tip: 'USD IG bonds with a small multi-asset sleeve'
+      tip: 'Broad investment-grade U.S. bond exposure'
     },
     w2: {
       org: 'Vanguard',
@@ -659,19 +659,19 @@ export default {
       org: 'Fullerton',
       name: 'Fullerton SGD Cash Fund',
       tag: 'Singapore cash',
-      rateLabel: '7-Day Yield',
+      rateLabel: '1Y Return',
       hold: 'Redeem T+1',
       risk: 'Low | from SGD 1',
       tip: 'Temasek-linked cash fund for SGD liquidity'
     },
     w4: {
-      org: 'Eastspring',
-      name: 'Eastspring Investments Asian Equity',
+      org: 'Global X',
+      name: 'FTSE Southeast Asia ETF (ASEA)',
       tag: 'ASEAN equity',
       rateLabel: '1Y Return',
       hold: 'Trade on market days',
       risk: 'Aggressive | from $1',
-      tip: 'Prudential’s Asia fund house, focused on regional equities'
+      tip: 'Exposure to large and liquid companies across Southeast Asia'
     },
     f1: { name: 'iShares Biotechnology ETF (IBB)', tag: '#1 popular' },
     f2: { name: 'Invesco QQQ Trust (QQQ)', tag: 'Most searched' },

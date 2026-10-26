@@ -114,22 +114,23 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { fundMeta, wealthProductMeta } from '../mock/products'
 
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const PRODUCTS = [
-  { id: 'f2', ticker: 'QQQ', mark: 'QQQ', nameKey: 'products.f2.name', rate: '18.20%', aliases: ['qqq', 'invesco qqq', 'nasdaq 100', 'nasdaq-100'] },
-  { id: 'f7', ticker: 'GLD', mark: 'Au', nameKey: 'products.f7.name', rate: '31.20%', aliases: ['gold', 'gld', 'spdr gold'] },
-  { id: 'f4', ticker: 'SPY', mark: 'SPY', nameKey: 'products.f4.name', rate: '22.10%', aliases: ['spy', 's&p 500', 's and p 500', 'sp500'] },
-  { id: 'f10', ticker: 'VTI', mark: 'VTI', nameKey: 'products.f10.name', rate: '20.05%', aliases: ['vti', 'total stock market', 'total us market'] },
-  { id: 'f1', ticker: 'IBB', mark: 'IBB', nameKey: 'products.f1.name', rate: '23.46%', aliases: ['ibb', 'biotech', 'biotechnology'] }
-]
+  { id: 'f2', ticker: 'QQQ', mark: 'QQQ', nameKey: 'products.f2.name', aliases: ['qqq', 'invesco qqq', 'nasdaq 100', 'nasdaq-100'] },
+  { id: 'f7', ticker: 'GLD', mark: 'Au', nameKey: 'products.f7.name', aliases: ['gold', 'gld', 'spdr gold'] },
+  { id: 'f4', ticker: 'SPY', mark: 'SPY', nameKey: 'products.f4.name', aliases: ['spy', 's&p 500', 's and p 500', 'sp500'] },
+  { id: 'f10', ticker: 'VTI', mark: 'VTI', nameKey: 'products.f10.name', aliases: ['vti', 'total stock market', 'total us market'] },
+  { id: 'f1', ticker: 'IBB', mark: 'IBB', nameKey: 'products.f1.name', aliases: ['ibb', 'biotech', 'biotechnology'] }
+].map((product) => ({ ...product, rate: fundMeta.find((fund) => fund.id === product.id)?.y1 || '—' }))
 const RECOMMENDED_PRODUCTS = [
-  { id: 'w2', mark: 'VTI', nameKey: 'products.w2.name', tagKey: 'products.w2.tag', rate: '18.40%' },
-  { id: 'w4', mark: 'ASIA', nameKey: 'products.w4.name', tagKey: 'products.w4.tag', rate: '12.60%' },
-  { id: 'w3', mark: 'SGD', nameKey: 'products.w3.name', tagKey: 'products.w3.tag', rate: '5.85%' }
-]
+  { id: 'w2', mark: 'VTI', nameKey: 'products.w2.name', tagKey: 'products.w2.tag' },
+  { id: 'w4', mark: 'ASEA', nameKey: 'products.w4.name', tagKey: 'products.w4.tag' },
+  { id: 'w3', mark: 'SGD', nameKey: 'products.w3.name', tagKey: 'products.w3.tag' }
+].map((product) => ({ ...product, rate: wealthProductMeta.find((fund) => fund.id === product.id)?.rate || '—' }))
 const DEMO_VOICE_COMMANDS = [
   'Buy 200 US dollars worth of gold for me',
   'I want to buy a high-yield wealth product'

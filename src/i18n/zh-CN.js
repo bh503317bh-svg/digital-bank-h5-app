@@ -374,10 +374,10 @@ export default {
     goTransfer: '去转入',
     wealthGift: '理财礼',
     goBuy: '去购买',
-    hqPlusX: 'Money Market Plus',
-    hqPlus: 'Money Market',
-    rateSince: '7-Day Yield (APY) · 灵活申赎 · $1 起购',
-    rate7d: '7-Day Yield (APY) · 随用随转 · $0.01 起购',
+    hqPlusX: 'Fidelity 政府货币市场基金（SPAXX）',
+    hqPlus: 'Vanguard 联邦货币市场基金（VMFXX）',
+    rateSince: '7日收益率 · 2026年9月25日 · 灵活申赎',
+    rate7d: '7日 SEC 收益率 · 2026年10月1日 · 高流动性',
     learnBar: '学知识，领 $5 福利券',
     claim: '领取',
     claimed: '领取成功',
@@ -575,8 +575,8 @@ export default {
     sec_dividend: '红利',
     sec_broad: '宽基',
     sec_asean: '东南亚',
-    w1: '近一周涨跌幅',
-    y1: '近一年涨跌幅',
+    w1: '数据日期',
+    y1: '近一年总回报',
     buy: '买一笔',
     buyTitle: '买一笔',
     buyMsg: '确认买入 {name}？',
@@ -619,29 +619,29 @@ export default {
   },
   products: {
     hqPlus: {
-      name: 'Money Market',
-      desc: 'Vanguard Federal Money Market 风格，流动性强',
-      rateLabel: '7-Day Yield (APY)'
+      name: 'Vanguard 联邦货币市场基金（VMFXX）',
+      desc: '联邦货币市场基金 · 高流动性',
+      rateLabel: '7日 SEC 收益率 · 2026年10月1日'
     },
     hqPlusX: {
-      name: 'Money Market Plus',
-      desc: '高收益货基增强 · 新客专享',
-      rateLabel: '7-Day Yield (APY)',
-      tag: '新客专享'
+      name: 'Fidelity 政府货币市场基金（SPAXX）',
+      desc: '政府货币市场基金 · 每日流动性',
+      rateLabel: '7日收益率 · 2026年9月25日',
+      tag: '现金基金'
     },
     gsPlus: {
-      name: 'US Aggregate Bond',
-      desc: '投资级美债 / AGG 风格配置',
-      rateLabel: 'SEC Yield'
+      name: 'iShares 美国核心综合债券（AGG）',
+      desc: '投资级美国债券 ETF',
+      rateLabel: '30日 SEC 收益率 · 2026年9月30日'
     },
     w1: {
-      org: 'Fidelity',
-      name: 'Fidelity Conservative Income Bond',
-      tag: 'Multi-asset',
+      org: 'iShares',
+      name: '美国核心综合债券 ETF（AGG）',
+      tag: '美国债券',
       rateLabel: '30-Day SEC Yield',
       hold: 'T+1 可赎回',
       risk: 'Moderate | $1 起购',
-      tip: '主投美元投资级债券，少量多元资产增厚收益'
+      tip: '广泛覆盖美国投资级债券市场'
     },
     w2: {
       org: 'Vanguard',
@@ -656,19 +656,19 @@ export default {
       org: 'Fullerton',
       name: 'Fullerton SGD Cash Fund',
       tag: '新加坡货基',
-      rateLabel: '7日年化',
+      rateLabel: '近一年回报',
       hold: 'T+1 可赎回',
       risk: '低风险 | SGD 1 起购',
       tip: '淡马锡系富敦，主投新加坡元现金与短债'
     },
     w4: {
-      org: 'Eastspring',
-      name: 'Eastspring Investments Asian Equity',
+      org: 'Global X',
+      name: '富时东南亚 ETF（ASEA）',
       tag: '东盟股票',
       rateLabel: '近一年',
       hold: '交易日申赎',
       risk: '进取 | $1 起购',
-      tip: '保诚旗下瀚亚，配置亚洲及东南亚股票'
+      tip: '覆盖东南亚大型且流动性较高的上市公司'
     },
     f1: { name: 'iShares Biotechnology ETF (IBB)', tag: '人气榜第一' },
     f2: { name: 'Invesco QQQ Trust (QQQ)', tag: '搜索热度高' },
