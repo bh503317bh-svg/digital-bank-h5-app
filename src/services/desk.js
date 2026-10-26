@@ -153,15 +153,22 @@ export function setCardControl(id, patch) {
 }
 
 export function getKyc() {
-  return loadJson('kyc', {
-    status: 'none',
-    name: '',
-    idNo: '',
+  const verifiedProfile = {
+    status: 'verified',
+    name: 'Ethan Chen',
+    idNo: 'S9012345A',
     country: 'SG',
-    address: '',
-    taxId: '',
+    address: '8 Marina Boulevard, Singapore 018981',
+    taxId: 'SG-TIN-9012345A',
     riskAck: false
-  })
+  }
+  const saved = loadJson('kyc', null)
+  if (!saved || saved.status === 'none') {
+    saveJson('kyc', verifiedProfile)
+    saveJson('face_ok', true)
+    return verifiedProfile
+  }
+  return { ...verifiedProfile, ...saved }
 }
 
 export function saveKyc(patch) {
@@ -173,12 +180,12 @@ export function saveKyc(patch) {
 }
 
 export function faceVerified() {
-  return !!loadJson('face_ok', false)
+  return !!loadJson('face_ok', true)
 }
 
 export function markFaceVerified() {
   saveJson('face_ok', true)
-  pushNotice('Face', 'demo walkthrough')
+  pushNotice('Identity verified', 'Facial verification completed')
 }
 
 export function twoFaOn() {

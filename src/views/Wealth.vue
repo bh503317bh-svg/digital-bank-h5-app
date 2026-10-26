@@ -1,10 +1,13 @@
 <template>
   <div class="page wealth">
     <div class="top">
-      <div class="title">{{ t('wealth.title') }}</div>
+      <div>
+        <div class="eyebrow">AKU PRIVATE WEALTH</div>
+        <div class="title">{{ t('wealth.title') }}</div>
+      </div>
       <div class="actions">
-        <div @click="openSearch"><van-icon name="search" /><div>{{ t('common.search') }}</div></div>
-        <div @click="showWatch = true"><van-icon name="plus" /><div>{{ t('common.watchlist') }}</div></div>
+        <div @click="openSearch"><span><van-icon name="search" /></span><div>{{ t('common.search') }}</div></div>
+        <div @click="showWatch = true"><span><van-icon name="star-o" /></span><div>{{ t('common.watchlist') }}</div></div>
       </div>
     </div>
 
@@ -25,23 +28,24 @@
         :class="['cat', { on: activeCat === c.key }]"
         @click="selectCat(c)"
       >
-        <div class="ci" :style="{ background: c.tone }"><van-icon :name="c.icon" size="18" color="#fff" /></div>
-        <div>{{ c.name }}</div>
+        <div class="ci"><FeatureIcon :name="c.art" /></div>
+        <div class="cat-name" :title="c.name">{{ c.name }}</div>
       </div>
     </div>
 
     <div class="shortcuts">
-      <div @click="scrollList"><van-icon name="fire" /> {{ t('wealth.hotList') }}</div>
-      <div @click="$router.push('/newbie')"><van-icon name="gift-o" /> {{ t('wealth.hotAct') }}</div>
+      <div @click="scrollList"><span class="shortcut-icon"><FeatureIcon name="wealth" /></span><span>{{ t('wealth.hotList') }}</span></div>
+      <div @click="$router.push('/newbie')"><span class="shortcut-icon"><FeatureIcon name="benefits" /></span><span>{{ t('wealth.hotAct') }}</span></div>
     </div>
 
     <div class="wb-card promo" @click="goBuy({ id: 'hqPlusX', name: t('newbie.hqPlusX'), rate: '5.20%' })">
       <div>
+        <div class="curated">{{ t('wealth.curated') }}</div>
         <div class="p-title">{{ t('wealth.promoTitle') }}</div>
         <div class="rate big">5.20%</div>
         <div class="muted">{{ t('wealth.promoRateLabel') }}</div>
       </div>
-      <van-button size="small" color="#0052d9" round>{{ t('wealth.buyNow') }}</van-button>
+      <van-button size="small" round>{{ t('wealth.viewProduct') }}</van-button>
     </div>
 
     <div class="wb-card event" @click="goBuy({ id: 'w2', name: t('products.w2.name'), rate: '18.40%' })">
@@ -58,8 +62,8 @@
       <div v-if="!visibleProducts.length" class="empty">{{ t('wealth.noMatch') }}</div>
       <div v-for="p in visibleProducts" :key="p.id" class="item" @click="goBuy(p)">
         <div class="row1">
-          <span class="org">{{ p.org }}</span>
-          <span class="name">{{ p.name }}</span>
+          <div class="issuer-mark"><FeatureIcon name="wealth" /></div>
+          <div class="product-copy"><span class="org">{{ p.org }}</span><span class="name">{{ p.name }}</span></div>
           <span class="tag">{{ p.tag }}</span>
           <van-icon
             :name="watched(p.id) ? 'star' : 'star-o'"
@@ -77,6 +81,7 @@
             <div class="muted">{{ p.risk }}</div>
           </div>
         </div>
+        <div class="product-meta"><span>USD</span><span>{{ t('wealth.professionalCustody') }}</span><span>{{ p.risk }}</span></div>
         <div class="tip"><van-icon name="volume-o" size="14" /> {{ p.tip }}</div>
       </div>
     </div>
@@ -105,6 +110,7 @@ import { useI18n } from 'vue-i18n'
 import { showSuccessToast } from 'vant'
 import { localizeWealthProducts, wealthCategories } from '../mock/products'
 import { getWatchlist, isWatched, toggleWatch } from '../utils/local'
+import FeatureIcon from '../components/FeatureIcon.vue'
 
 const { t, locale } = useI18n()
 const router = useRouter()
@@ -117,9 +123,11 @@ const listAnchor = ref(null)
 
 const cats = computed(() => {
   locale.value
+  const arts = ['loans', 'transactions', 'funds', 'wealth', 'points']
   return wealthCategories(t).map((c, i) => ({
     ...c,
-    key: ['bond', 'mm', 'etf', 'private', 'cd'][i]
+    key: ['bond', 'mm', 'etf', 'private', 'cd'][i],
+    art: arts[i]
   }))
 })
 
@@ -184,7 +192,7 @@ function scrollList() {
 
 function goBuy(p) {
   router.push({
-    path: '/wealth/buy',
+    path: '/wealth/detail',
     query: { id: p.id, name: p.name, rate: p.rate }
   })
 }
@@ -199,45 +207,60 @@ function openWatch(w) {
   showWatch.value = false
   const p = allProducts.value.find((x) => x.id === w.id)
   if (p) goBuy(p)
-  else router.push({ path: '/wealth/buy', query: { id: w.id, name: w.name } })
+  else router.push({ path: '/wealth/detail', query: { id: w.id, name: w.name } })
 }
 </script>
 
 <style scoped>
-.wealth { padding: 12px 12px 20px; }
-.top { display: flex; justify-content: space-between; align-items: center; padding: 4px 4px 12px; }
-.title { font-size: 22px; font-weight: 800; }
-.actions { display: flex; gap: 16px; text-align: center; font-size: 11px; color: #666; }
+.wealth { padding: 0 12px 24px; background: linear-gradient(180deg,#0b3159 0,#174f87 148px,#f4f6f8 148px); }
+.top { display: flex; justify-content: space-between; align-items: center; padding: 19px 4px 18px; color: #fff; }
+.eyebrow { margin-bottom: 4px; color: #d9be83; font-size: 9px; font-weight: 700; letter-spacing: 1.4px; }
+.title { font-size: 25px; font-weight: 750; letter-spacing: .3px; }
+.actions { display: flex; gap: 13px; text-align: center; font-size: 9px; color: rgba(255,255,255,.75); }
+.actions span { display: grid; place-items: center; width: 32px; height: 32px; margin: 0 auto 3px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; background: rgba(255,255,255,.09); color: #fff; font-size: 15px; }
+.actions > div > div { max-width: 58px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cats {
-  display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
-  background: #fff; border-radius: 12px; padding: 14px 8px; text-align: center; font-size: 11px;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 3px;
+  background: #fff; border: 1px solid rgba(8,40,73,.06); border-radius: 16px; padding: 15px 5px; text-align: center; font-size: 9px; box-shadow: 0 10px 28px rgba(8,40,73,.1);
 }
-.cat.on .ci { box-shadow: 0 0 0 2px #0052d9; }
+.cat { min-width: 0; padding: 2px 0 4px; border-radius: 12px; }
+.cat.on { color: #123b6d; font-weight: 750; background: linear-gradient(180deg,rgba(18,59,109,.04),rgba(200,164,93,.1)); }.cat.on .ci { transform: translateY(-1px) scale(1.07); }
 .ci {
-  width: 40px; height: 40px; margin: 0 auto 6px; border-radius: 50%; color: #fff;
+  width: 46px; height: 46px; margin: 0 auto 5px; padding: 2px;
   display: flex; align-items: center; justify-content: center; font-weight: 700;
+  transition: transform .18s ease;
 }
+.cat-name { width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 16px; }
 .shortcuts {
   margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
 }
 .shortcuts > div {
-  background: #fff; border-radius: 10px; padding: 10px 12px; font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; min-width: 0; gap: 7px; background: #fff; border-radius: 10px; padding: 8px 11px; font-size: 12px; font-weight: 650;
 }
-.promo, .event { margin-top: 10px; padding: 14px; }
+.shortcuts > div > span:last-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.shortcut-icon { width: 28px; height: 28px; flex: 0 0 28px; }
+.promo, .event { margin-top: 11px; padding: 16px; }
 .promo { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.promo { color: #fff; border: 0; background: radial-gradient(circle at 90% 10%,rgba(224,194,132,.34),transparent 35%),linear-gradient(145deg,#174f87,#082849); }
+.promo .muted { color: rgba(255,255,255,.58); }.promo .rate { color: #ead098; }
+.promo :deep(.van-button) { border-color: #d8ba78; background: #d8ba78; color: #102d4d; font-weight: 700; }
+.curated { margin-bottom: 8px; color: #dfc282; font-size: 9px; font-weight: 700; letter-spacing: 1px; }
 .p-title, .e-title { font-weight: 600; font-size: 14px; }
-.link { margin-top: 8px; color: #0052d9; font-size: 13px; font-weight: 600; }
+.link { margin-top: 8px; color: #123b6d; font-size: 13px; font-weight: 600; }
 .big { font-size: 24px; margin-top: 6px; }
 .muted { color: #8a8f99; font-size: 12px; margin-top: 4px; }
-.list { padding: 4px 12px; }
+.list { padding: 2px 14px; }
 .item { padding: 14px 0; border-bottom: 1px solid #f0f2f5; }
 .item:last-child { border-bottom: none; }
-.row1 { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.row1 { display: flex; align-items: center; gap: 9px; }
+.issuer-mark { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 38px; padding: 2px; }
+.product-copy { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 2px; }
 .org { font-size: 12px; color: #666; }
-.name { font-weight: 600; font-size: 14px; flex: 1; }
+.name { font-weight: 700; font-size: 14px; }
 .tag { font-size: 10px; color: #ff6b00; background: #fff1e6; border-radius: 4px; padding: 1px 4px; }
 .row2 { margin-top: 8px; display: flex; justify-content: space-between; gap: 10px; }
 .right { text-align: right; font-size: 12px; color: #555; }
+.product-meta { display: flex; gap: 6px; margin-top: 9px; }.product-meta span { padding: 3px 6px; border-radius: 5px; background: #f1f4f7; color: #637083; font-size: 9px; }
 .tip {
   margin-top: 8px; background: #f7f8fa; border-radius: 8px; padding: 8px 10px;
   font-size: 12px; color: #666; line-height: 1.4;

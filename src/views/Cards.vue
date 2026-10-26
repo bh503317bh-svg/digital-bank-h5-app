@@ -51,7 +51,7 @@
     </div>
 
     <div class="safe-bottom-btn">
-      <van-button block round plain type="primary" color="#0052d9" @click="showAdd = true">
+      <van-button block round plain type="primary" color="#123b6d" @click="showAdd = true">
         {{ t('cards.add') }}
       </van-button>
     </div>
@@ -260,7 +260,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-:deep(.van-nav-bar) { background: #0052d9; }
+:deep(.van-nav-bar) { background: #123b6d; }
 :deep(.van-nav-bar__title),
 :deep(.van-nav-bar .van-icon) { color: #fff !important; }
 .tip-box { background: #fff; padding: 14px 16px; }
@@ -272,7 +272,7 @@ onMounted(async () => {
   min-height: 140px; position: relative;
   box-shadow: 0 8px 20px rgba(0,0,0,.12);
 }
-.bank-card.wecode { background: linear-gradient(135deg, #0052d9, #2f7bff); }
+.bank-card.wecode { background: linear-gradient(135deg, #123b6d, #2f7bff); }
 .bc-top { display: flex; justify-content: space-between; }
 .bc-name { font-size: 15px; font-weight: 600; }
 .bc-type { margin-top: 4px; font-size: 12px; opacity: .85; }
@@ -284,7 +284,7 @@ onMounted(async () => {
   background: #fff; border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; font-size: 12px;
 }
 .ctl-row span { font-weight: 600; margin-right: auto; }
-.ctl-row button { border: 0; background: #eef4ff; color: #0052d9; border-radius: 12px; padding: 4px 8px; }
+.ctl-row button { border: 0; background: #eef4ff; color: #123b6d; border-radius: 12px; padding: 4px 8px; }
 .bc-action {
   position: absolute; right: 16px; bottom: 16px;
   font-size: 12px; opacity: .95; border: 1px solid rgba(255,255,255,.5);

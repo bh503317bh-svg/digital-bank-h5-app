@@ -55,7 +55,7 @@
             round
             block
             type="primary"
-            color="#0052d9"
+            color="#123b6d"
             native-type="submit"
             :loading="loading"
             style="margin-top:12px"
@@ -266,7 +266,7 @@ onMounted(async () => {
 }
 .recv-icon {
   width: 40px; height: 40px; border-radius: 10px;
-  background: linear-gradient(135deg, #0052d9, #2f7bff);
+  background: linear-gradient(135deg, #123b6d, #2f7bff);
   color: #fff; font-size: 12px; font-weight: 700;
   display: flex; align-items: center; justify-content: center;
 }
@@ -274,7 +274,7 @@ onMounted(async () => {
 .recv-name { font-size: 14px; font-weight: 600; }
 .recv-no { margin-top: 4px; font-size: 13px; color: #555; letter-spacing: 0.5px; }
 .copy-btn, .open-btn {
-  border: 0; background: transparent; color: #0052d9;
+  border: 0; background: transparent; color: #123b6d;
   font-size: 13px; font-weight: 600; white-space: nowrap; padding: 0;
 }
 .wire-rows { margin-top: 8px; }
@@ -285,10 +285,10 @@ onMounted(async () => {
 .wire-row:last-child { border-bottom: 0; }
 .wlab { font-size: 12px; color: #8a8f99; }
 .wval { margin-top: 2px; font-size: 14px; color: #222; word-break: break-all; }
-.wcopy { font-size: 12px; color: #0052d9; margin-left: 12px; flex-shrink: 0; }
+.wcopy { font-size: 12px; color: #123b6d; margin-left: 12px; flex-shrink: 0; }
 .copy-all {
   margin-top: 12px; width: 100%; height: 40px; border-radius: 20px;
-  border: 1px solid #0052d9; background: #fff; color: #0052d9;
+  border: 1px solid #123b6d; background: #fff; color: #123b6d;
   font-size: 14px; font-weight: 600;
 }
 .bank-row {

@@ -5,7 +5,7 @@ const SYMBOL = {
   USD: '$',
   EUR: '€',
   HKD: 'HK$',
-  JPY: '¥',
+  JPY: 'JP¥',
   SGD: 'S$',
   CNY: 'CN¥',
   THB: '฿',
@@ -21,14 +21,15 @@ export function maskAccount(no = '') {
   return `**** **** **** ${s.slice(-4)}`
 }
 
-export function money(amount, { hide = false, currency = 'USD' } = {}) {
+export function money(amount, { hide = false, currency = 'USD', showCode = false } = {}) {
   const code = currency || 'USD'
   const sym = SYMBOL[code] || `${code} `
   if (hide) return '****'
   const n = Number(amount)
-  if (!Number.isFinite(n)) return code === 'JPY' ? `${sym}0` : `${sym}0.00`
-  if (code === 'JPY') return `${sym}${Math.round(n).toLocaleString('en-US')}`
-  return `${sym}${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  const prefix = showCode ? `${code} ` : ''
+  if (!Number.isFinite(n)) return code === 'JPY' ? `${prefix}${sym}0` : `${prefix}${sym}0.00`
+  if (code === 'JPY') return `${prefix}${sym}${Math.round(n).toLocaleString('en-US')}`
+  return `${prefix}${sym}${n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }
 
 export function formatSignedAmount(item) {

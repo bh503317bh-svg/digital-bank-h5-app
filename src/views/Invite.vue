@@ -62,7 +62,7 @@ async function invite() {
 .hero { text-align: center; padding: 8px 20px 0; }
 .bubble {
   width: 56px; height: 56px; margin: 0 auto; border-radius: 50%;
-  background: #fff; color: #0052d9; font-weight: 800; font-size: 24px;
+  background: #fff; color: #123b6d; font-weight: 800; font-size: 24px;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 6px 16px rgba(0,82,217,.15);
 }
@@ -76,12 +76,12 @@ async function invite() {
 }
 .feat { display: flex; gap: 12px; margin-bottom: 16px; }
 .fi {
-  width: 36px; height: 36px; border-radius: 10px; background: #e8f1ff; color: #0052d9;
+  width: 36px; height: 36px; border-radius: 10px; background: #e8f1ff; color: #123b6d;
   display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;
 }
 .ft { font-weight: 700; font-size: 14px; }
 .fs { margin-top: 4px; color: #8a8f99; font-size: 12px; }
-.brand { text-align: center; margin-top: 8px; font-weight: 700; color: #0052d9; }
+.brand { text-align: center; margin-top: 8px; font-weight: 700; color: #123b6d; }
 .slogan { text-align: center; margin-top: 4px; font-size: 12px; color: #8a8f99; }
 .hint { text-align: center; margin-top: 8px; font-size: 12px; color: #666; }
 .invite-btn {

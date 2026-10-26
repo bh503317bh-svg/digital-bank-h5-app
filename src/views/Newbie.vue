@@ -10,7 +10,7 @@
       <div class="hd">{{ t('newbie.transferGift') }}</div>
       <div class="desc" v-html="transferDescHtml" />
       <div class="muted">{{ t('newbie.transferTip') }}</div>
-      <van-button size="small" color="#0052d9" round @click="$router.push('/transfer-in')">{{ t('newbie.goTransfer') }}</van-button>
+      <van-button size="small" color="#123b6d" round @click="$router.push('/transfer-in')">{{ t('newbie.goTransfer') }}</van-button>
     </div>
 
     <div class="wb-card block">
@@ -21,7 +21,7 @@
           <div class="rate big">5.20%</div>
           <div class="muted">{{ t('newbie.rateSince') }}</div>
         </div>
-        <van-button size="small" color="#0052d9" round @click="goBuy('hqPlusX', t('newbie.hqPlusX'), '5.20%')">{{ t('newbie.goBuy') }}</van-button>
+        <van-button size="small" color="#123b6d" round @click="goBuy('hqPlusX', t('newbie.hqPlusX'), '5.20%')">{{ t('newbie.goBuy') }}</van-button>
       </div>
       <div class="prod" style="margin-top:14px">
         <div>
@@ -29,7 +29,7 @@
           <div class="rate big">4.85%</div>
           <div class="muted">{{ t('newbie.rate7d') }}</div>
         </div>
-        <van-button size="small" color="#0052d9" round @click="goBuy('hqPlus', t('newbie.hqPlus'), '4.85%')">{{ t('newbie.goBuy') }}</van-button>
+        <van-button size="small" color="#123b6d" round @click="goBuy('hqPlus', t('newbie.hqPlus'), '4.85%')">{{ t('newbie.goBuy') }}</van-button>
       </div>
     </div>
 

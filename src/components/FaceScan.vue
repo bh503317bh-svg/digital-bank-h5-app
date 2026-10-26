@@ -11,9 +11,9 @@
         </div>
       </div>
       <div class="step">{{ stepText }}</div>
-      <van-button v-if="done" block round color="#0052d9" @click="finish">{{ t('desk.faceDone') }}</van-button>
-      <van-button v-else-if="denied" block round color="#0052d9" @click="askCamera">{{ t('desk.faceRetry') }}</van-button>
-      <van-button v-else block round plain color="#0052d9" @click="open = false">{{ t('common.cancel') }}</van-button>
+      <van-button v-if="done" block round color="#123b6d" @click="finish">{{ t('desk.faceDone') }}</van-button>
+      <van-button v-else-if="denied" block round color="#123b6d" @click="askCamera">{{ t('desk.faceRetry') }}</van-button>
+      <van-button v-else block round plain color="#123b6d" @click="open = false">{{ t('common.cancel') }}</van-button>
     </div>
   </van-popup>
 </template>
@@ -122,7 +122,7 @@ onBeforeUnmount(stopCamera)
 .stage { display: flex; justify-content: center; margin: 22px 0; }
 .oval {
   width: 180px; height: 230px; border-radius: 90px;
-  border: 3px solid #0052d9; position: relative; overflow: hidden;
+  border: 3px solid #123b6d; position: relative; overflow: hidden;
   background: #111820;
 }
 .oval video {
@@ -137,7 +137,7 @@ onBeforeUnmount(stopCamera)
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
   padding: 16px; color: #d6e4ff; font-size: 13px;
 }
-.step { min-height: 24px; margin-bottom: 16px; font-weight: 600; color: #0052d9; }
+.step { min-height: 24px; margin-bottom: 16px; font-weight: 600; color: #123b6d; }
 @keyframes sweep {
   0% { top: -20px; }
   100% { top: 220px; }

@@ -1,7 +1,7 @@
 <template>
   <div class="login-page">
     <div class="hero">
-      <div class="logo">A</div>
+      <div class="logo"><van-icon name="balance-o" /></div>
       <div class="name">{{ t('common.brand') }}</div>
       <div class="sub">{{ t('login.sub') }}</div>
     </div>
@@ -12,7 +12,7 @@
         <van-field v-if="needOtp" v-model="otp" :label="t('desk.otp')" :placeholder="otpHint" />
       </van-cell-group>
       <div style="margin: 24px 16px">
-        <van-button round block type="primary" native-type="submit" color="#0052d9">{{ t('login.submit') }}</van-button>
+        <van-button round block type="primary" native-type="submit" color="#123b6d">{{ t('login.submit') }}</van-button>
       </div>
     </van-form>
   </div>
@@ -60,16 +60,19 @@ async function onSubmit() {
 <style scoped>
 .login-page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #dce9ff 0%, #f3f5f9 45%);
+  background:
+    radial-gradient(circle at 80% 4%, rgba(200,164,93,.30), transparent 26%),
+    linear-gradient(180deg, #0b3159 0, #174f87 34%, #edf2f7 34.2%, #f5f7f9 100%);
   padding: 48px 0 24px;
 }
-.hero { text-align: center; margin-bottom: 36px; }
+.hero { text-align: center; margin-bottom: 36px; color: #fff; }
 .logo {
   width: 64px; height: 64px; margin: 0 auto 12px;
-  border-radius: 20px; background: #0052d9; color: #fff;
+  border: 1px solid rgba(255,255,255,.35); border-radius: 50%; background: rgba(255,255,255,.12); color: #ead29d;
   display: flex; align-items: center; justify-content: center;
   font-size: 28px; font-weight: 700;
 }
-.name { font-size: 26px; font-weight: 700; color: #0052d9; }
-.sub { margin-top: 8px; color: #8a8f99; font-size: 13px; }
+.name { font-size: 26px; font-weight: 700; color: #fff; letter-spacing: .5px; }
+.sub { margin-top: 8px; color: rgba(255,255,255,.72); font-size: 13px; }
+:deep(.van-cell-group--inset) { box-shadow: 0 18px 45px rgba(11,49,89,.14); border-radius: 18px; overflow: hidden; }
 </style>

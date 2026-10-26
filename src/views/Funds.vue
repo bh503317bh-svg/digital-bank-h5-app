@@ -3,7 +3,7 @@
     <div class="search-row">
       <van-search v-model="keyword" shape="round" :placeholder="t('funds.searchPh')" @search="onSearch" />
       <div class="watch" @click="showWatch = true">
-        <van-icon name="plus" />
+        <span><van-icon name="star-o" /></span>
         <div>{{ t('common.watchlist') }}</div>
       </div>
     </div>
@@ -16,8 +16,8 @@
           :class="['g-item', { on: activeEntry === item.key }]"
           @click="onEntry(item)"
         >
-          <div class="gi"><van-icon :name="item.icon" size="20" /></div>
-          <div>{{ item.label }}</div>
+          <div class="gi"><FeatureIcon :name="item.art" /></div>
+          <div class="entry-label" :title="item.label">{{ item.label }}</div>
         </div>
       </div>
     </div>
@@ -79,7 +79,7 @@
                   <div :class="rateClass(f.y1)">{{ f.y1 }}</div>
                   <div class="muted">{{ t('funds.y1') }}</div>
                 </div>
-                <van-button size="small" color="#e8f1ff" style="color:#0052d9" round @click.stop="goBuy(f)">
+                <van-button class="invest-btn" size="small" type="primary" round @click.stop="goBuy(f)">
                   {{ t('funds.buy') }}
                 </van-button>
               </div>
@@ -106,7 +106,7 @@
                   <div :class="rateClass(f.y1)">{{ f.y1 }}</div>
                   <div class="muted">{{ t('funds.y1') }}</div>
                 </div>
-                <van-button size="small" color="#e8f1ff" style="color:#0052d9" round @click.stop="goBuy(f)">
+                <van-button class="invest-btn" size="small" type="primary" round @click.stop="goBuy(f)">
                   {{ t('funds.buy') }}
                 </van-button>
               </div>
@@ -137,7 +137,7 @@
                   <div :class="rateClass(s.chg)">{{ s.chg }}</div>
                   <div class="muted">{{ t('funds.chg') }}</div>
                 </div>
-                <van-button size="small" color="#e8f1ff" style="color:#0052d9" round @click.stop="goBuy(s)">
+                <van-button class="invest-btn" size="small" type="primary" round @click.stop="goBuy(s)">
                   {{ t('funds.buy') }}
                 </van-button>
               </div>
@@ -173,6 +173,7 @@ import { useI18n } from 'vue-i18n'
 import { showFailToast, showSuccessToast } from 'vant'
 import { ASEAN_INDEX_TICKERS, SECTOR_KEYS, fundEntryRows, localizeFunds, localizeStocks, marketQuotes } from '../mock/products'
 import { getWatchlist, isWatched, toggleWatch } from '../utils/local'
+import FeatureIcon from '../components/FeatureIcon.vue'
 
 const { t, locale, tm } = useI18n()
 const router = useRouter()
@@ -188,9 +189,9 @@ const ENTRY_KEYS = [
   'rank', 'index', 'global', 'gold', 'fixed',
   'bond', 'treasury', 'qqq', 'smart', 'more'
 ]
-const ENTRY_ICONS = [
-  'bar-chart-o', 'chart-trending-o', 'location-o', 'gem-o', 'balance-list-o',
-  'bill-o', 'tosend', 'replay', 'guide-o', 'apps-o'
+const ENTRY_ART = [
+  'funds', 'wealth', 'invite', 'points', 'loans',
+  'transactions', 'security', 'transfer', 'benefits', 'card'
 ]
 
 const entries = computed(() => {
@@ -199,7 +200,7 @@ const entries = computed(() => {
   const items = (Array.isArray(labels) ? labels : []).map((label, i) => ({
     label,
     key: ENTRY_KEYS[i] || `e${i}`,
-    icon: ENTRY_ICONS[i] || 'apps-o'
+    art: ENTRY_ART[i] || 'funds'
   }))
   return fundEntryRows(items)
 })
@@ -322,7 +323,7 @@ function rateClass(v) {
 
 function goBuy(f) {
   router.push({
-    path: '/wealth/buy',
+    path: '/wealth/detail',
     query: { id: f.id, name: f.name, rate: f.y1 || f.chg || '' }
   })
 }
@@ -337,49 +338,52 @@ function openWatch(w) {
   showWatch.value = false
   const f = funds.value.find((x) => x.id === w.id)
   if (f) goBuy(f)
-  else router.push({ path: '/wealth/buy', query: { id: w.id, name: w.name } })
+  else router.push({ path: '/wealth/detail', query: { id: w.id, name: w.name } })
 }
 </script>
 
 <style scoped>
-.funds { padding-bottom: 70px; }
-.search-row { display: flex; align-items: center; padding-right: 8px; }
-.search-row :deep(.van-search) { flex: 1; padding: 8px 0 8px 8px; background: transparent; }
-.watch { width: 44px; text-align: center; font-size: 11px; color: #666; }
-.grid { background: #fff; margin: 0 8px; border-radius: 12px; padding: 10px 4px; }
-.grid-row { display: grid; grid-template-columns: repeat(5, 1fr); }
-.g-item { text-align: center; font-size: 11px; padding: 8px 0; }
-.g-item.on .gi { background: #0052d9; color: #fff; }
+.funds { padding-bottom: 74px; background: #f4f6f8; }
+.search-row { display: flex; align-items: center; gap: 7px; padding: 8px 12px; background: linear-gradient(145deg,#174f87,#082849); }
+.search-row :deep(.van-search) { flex: 1; min-width: 0; padding: 0; background: transparent; }
+.search-row :deep(.van-search__content) { height: 42px; border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.96); }
+.watch { width: 53px; flex: 0 0 53px; overflow: hidden; color: rgba(255,255,255,.82); text-align: center; font-size: 9px; white-space: nowrap; }
+.watch span { display: grid; place-items: center; width: 30px; height: 30px; margin: 0 auto 2px; border: 1px solid rgba(255,255,255,.3); border-radius: 50%; background: rgba(255,255,255,.1); color: #fff; font-size: 15px; }
+.grid { background: #fff; margin: 10px 12px 12px; border: 1px solid rgba(8,40,73,.06); border-radius: 16px; padding: 10px 4px; box-shadow: 0 9px 25px rgba(15,39,68,.07); }
+.grid-row { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); }
+.g-item { min-width: 0; border-radius: 11px; text-align: center; font-size: 9px; padding: 7px 1px; }
+.g-item.on { color: #123b6d; font-weight: 750; background: linear-gradient(180deg,rgba(18,59,109,.04),rgba(200,164,93,.1)); }
+.g-item.on .gi { transform: translateY(-1px) scale(1.07); }
 .gi {
-  width: 40px; height: 40px; margin: 0 auto 4px; border-radius: 12px;
-  background: #e8f1ff; color: #0052d9; display: flex; align-items: center; justify-content: center;
+  width: 43px; height: 43px; margin: 0 auto 4px; padding: 2px;
+  display: flex; align-items: center; justify-content: center; transition: transform .18s ease;
 }
-.g-item.on .gi :deep(.van-icon) { color: #fff; }
+.entry-label { width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 15px; }
 
 .pillbar {
-  display: flex; gap: 8px; padding: 12px 12px 4px; background: #f0f3f8;
-  margin: 0; flex-wrap: wrap;
+  display: flex; gap: 7px; padding: 12px 12px 4px; background: #f4f6f8;
+  margin: 0; flex-wrap: nowrap; overflow-x: auto;
 }
 .pill {
   border: none; background: transparent; color: #5a6070;
   font-size: 14px; padding: 8px 16px; border-radius: 20px; font-weight: 500;
 }
 .pill.on {
-  background: #dce9ff; color: #0052d9; font-weight: 700;
+  background: linear-gradient(135deg,#e7eef8,#f7f0e2); color: #123b6d; font-weight: 700;
 }
 
 .sector-row {
-  display: flex; gap: 8px; padding: 10px 12px 0; overflow-x: auto; background: #f0f3f8;
+  display: flex; gap: 8px; padding: 10px 12px 0; overflow-x: auto; background: #f4f6f8;
 }
 .sec {
   flex: 0 0 auto; padding: 4px 12px; border-radius: 12px;
   background: #fff; font-size: 12px; color: #666;
 }
-.sec.on { color: #0052d9; font-weight: 600; background: #e8f1ff; }
+.sec.on { color: #123b6d; font-weight: 600; background: #e8f1ff; }
 
 .section-hd {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 14px 16px 8px; font-weight: 700; font-size: 15px; background: #f0f3f8;
+  padding: 14px 16px 8px; font-weight: 700; font-size: 15px; background: #f4f6f8;
 }
 .more { font-size: 12px; color: #8a8f99; font-weight: 400; }
 
@@ -400,7 +404,7 @@ function openWatch(w) {
   display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
 }
 .sym {
-  font-size: 11px; color: #0052d9; background: #eef4ff;
+  font-size: 11px; color: #123b6d; background: #eef4ff;
   border-radius: 4px; padding: 1px 5px; font-weight: 700;
 }
 .star { margin-left: auto; }
@@ -413,7 +417,8 @@ function openWatch(w) {
   grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: center;
 }
 .metrics.with-pop { grid-template-columns: 1fr 1fr 1fr auto; }
-.pop { color: #0052d9; font-size: 18px; font-weight: 700; }
+.invest-btn { min-width: 64px; padding: 0 12px; }
+.pop { color: #123b6d; font-size: 18px; font-weight: 700; }
 .up { color: #00a870; font-size: 18px; font-weight: 700; }
 .down { color: #e34d59; font-size: 18px; font-weight: 700; }
 .muted { color: #8a8f99; font-size: 11px; margin-top: 2px; }

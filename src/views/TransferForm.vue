@@ -80,7 +80,7 @@
         <van-field v-model="amount" :label="t('transfer.amount')" placeholder="10.00" />
       </van-cell-group>
       <div style="margin:24px 16px">
-        <van-button round block type="primary" color="#0052d9" native-type="submit" :loading="loading">
+        <van-button round block type="primary" color="#123b6d" native-type="submit" :loading="loading">
           {{ t('transfer.confirmOut') }}
         </van-button>
       </div>
@@ -393,7 +393,7 @@ async function onSubmit() {
 </script>
 
 <style scoped>
-:deep(.van-nav-bar) { background: #0052d9; }
+:deep(.van-nav-bar) { background: #123b6d; }
 :deep(.van-nav-bar__title), :deep(.van-nav-bar .van-icon) { color: #fff !important; }
 :deep(.van-field__control) { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 </style>

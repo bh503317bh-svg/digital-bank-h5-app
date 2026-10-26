@@ -4,7 +4,7 @@
 
     <div class="wb-card summary">
       <div class="muted">{{ t('loans.outstanding') }}</div>
-      <div class="num">{{ money(dash?.outstanding_principal || '0.00') }}</div>
+      <div class="num"><MoneyAmount :value="dash?.outstanding_principal || 0" currency="USD" show-code size="lg" tone="primary" /></div>
       <div class="muted">{{ t('loans.activeCount', { n: dash?.active_loans ?? 0 }) }}</div>
     </div>
 
@@ -41,7 +41,7 @@
           <van-button
             v-if="l.status === 'active' || l.status === 'overdue'"
             size="small"
-            color="#0052d9"
+            color="#123b6d"
             round
             @click="repay(l)"
           >{{ t('loans.repay') }}</van-button>
@@ -64,6 +64,7 @@ import { useI18n } from 'vue-i18n'
 import { showConfirmDialog } from 'vant'
 import { fetchLoanDashboard, fetchLoanProducts, loanApply, loanRepay } from '../api'
 import PayPassword from '../components/PayPassword.vue'
+import MoneyAmount from '../components/MoneyAmount.vue'
 import { money } from '../utils'
 import { openResult } from '../utils/result'
 
@@ -200,7 +201,7 @@ onMounted(load)
 </script>
 
 <style scoped>
-:deep(.van-nav-bar) { background: #0052d9; }
+:deep(.van-nav-bar) { background: #123b6d; }
 :deep(.van-nav-bar__title), :deep(.van-nav-bar .van-icon) { color: #fff !important; }
 .loans { padding-bottom: 24px; }
 .summary { margin: 12px; padding: 16px; }
