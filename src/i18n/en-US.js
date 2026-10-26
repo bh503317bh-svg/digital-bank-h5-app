@@ -34,6 +34,8 @@ export default {
     voiceError: 'I could not hear that clearly. Please try again.',
     qqqCommand: 'Buy QQQ for USD 500',
     goldCommand: 'Buy USD 100 of gold',
+    qqqShortcut: 'Buy QQQ · $500',
+    goldShortcut: 'Buy Gold · $100',
     needBuyIntent: 'Start with “Buy”, “Purchase” or “Invest”.',
     unsupportedProduct: 'Try QQQ, GLD/gold, SPY, VTI or IBB.',
     needAmount: 'Please include a USD amount, such as “for 500 dollars”.',

@@ -34,6 +34,8 @@ export default {
     voiceError: '没有听清，请再试一次。',
     qqqCommand: 'Buy QQQ for USD 500',
     goldCommand: 'Buy USD 100 of gold',
+    qqqShortcut: 'Buy QQQ · $500',
+    goldShortcut: 'Buy Gold · $100',
     needBuyIntent: '请使用英文 Buy、Purchase 或 Invest 开始指令。',
     unsupportedProduct: '目前支持 QQQ、GLD/Gold、SPY、VTI 和 IBB。',
     needAmount: '请在英文指令中包含美元金额，例如 “for 500 dollars”。',

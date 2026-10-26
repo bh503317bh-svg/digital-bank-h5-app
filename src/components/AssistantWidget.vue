@@ -36,8 +36,8 @@
           </div>
           <div class="quick-label">{{ t('assistant.quickActions') }}</div>
           <div class="quick-commands">
-            <button type="button" @click="useCommand(t('assistant.qqqCommand'))"><b>QQQ</b><span>{{ t('assistant.qqqCommand') }}</span></button>
-            <button type="button" @click="useCommand(t('assistant.goldCommand'))"><b>GLD</b><span>{{ t('assistant.goldCommand') }}</span></button>
+            <button type="button" @click="useCommand(t('assistant.qqqCommand'))"><b>QQQ</b><span>{{ t('assistant.qqqShortcut') }}</span></button>
+            <button type="button" @click="useCommand(t('assistant.goldCommand'))"><b>GLD</b><span>{{ t('assistant.goldShortcut') }}</span></button>
           </div>
           <div class="composer">
             <input ref="inputEl" v-model="message" :placeholder="t('assistant.placeholder')" enterkeyhint="send" @keyup.enter="submit" />
