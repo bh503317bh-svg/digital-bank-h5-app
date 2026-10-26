@@ -1,7 +1,7 @@
 <template>
   <div ref="dockEl" class="assistant-dock" :class="{ listening, running, expanded: panelOpen }" :style="dockStyle">
     <Transition name="assistant-panel">
-      <section v-if="panelOpen" class="assistant-panel">
+      <section v-if="panelOpen" class="assistant-panel" :class="{ 'voice-panel': phase === 'voice' }">
         <template v-if="phase === 'confirm'">
           <div class="assistant-head">
             <span class="mini-orb"><img :src="assistantIcon" alt="" /></span>
@@ -21,16 +21,11 @@
 
         <template v-else-if="phase === 'voice'">
           <div class="voice-state">
-            <div class="voice-visual">
-              <span class="voice-core"><van-icon name="volume-o" /></span>
-              <div v-if="listening" class="voice-bars"><i v-for="n in 7" :key="n" /></div>
-            </div>
-            <div class="voice-copy">
-              <strong>{{ listening ? t('assistant.listening') : t('assistant.voiceReady') }}</strong>
-              <small>{{ interimText || hint || t('assistant.releaseToSend') }}</small>
-            </div>
+            <span class="wave-dot" />
+            <div class="voice-bars" :class="{ active: listening }"><i v-for="n in 15" :key="n" /></div>
+            <span class="wave-dot" />
           </div>
-          <button type="button" class="voice-cancel" @click="reset">{{ t('common.cancel') }}</button>
+          <small v-if="interimText || hint" class="voice-transcript">{{ interimText || hint }}</small>
         </template>
 
         <template v-else>
@@ -302,7 +297,8 @@ onBeforeUnmount(() => {
 .assistant-head { display: grid; grid-template-columns: 34px 1fr 24px; gap: 8px; align-items: center; }.assistant-head strong,.assistant-head small { display: block; }.assistant-head strong { color: #142033; font-size: 13px; }.assistant-head small { margin-top: 3px; color: #7f8b9a; font-size: 9px; }.assistant-head button { border: 0; background: transparent; color: #8994a1; font-size: 20px; }.mini-orb { width: 32px; height: 32px; }.mini-orb img { width: 100%; height: 100%; border-radius: 50%; }
 .order-card { display: grid; grid-template-columns: 38px 1fr auto; gap: 9px; align-items: center; margin: 12px 0 9px; padding: 10px; border-radius: 12px; background: linear-gradient(135deg,#f4f7fa,#fbf7ed); }.product-mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; background: linear-gradient(145deg,#306ca5,#123b6d); color: #fff; font-size: 10px; font-weight: 800; }.product-mark.gold { background: linear-gradient(145deg,#e5c26f,#a97a2d); font-size: 13px; }.order-card strong,.order-card small { display: block; }.order-card strong { font-size: 11px; }.order-card small { margin-top: 3px; color: #85909f; font-size: 9px; }.order-card>b { color: #123b6d; font-size: 11px; white-space: nowrap; }
 .assistant-check { display: flex; align-items: flex-start; gap: 8px; padding: 7px 3px; color: #536174; font-size: 10px; line-height: 1.35; }.assistant-check input { width: 15px; height: 15px; flex: 0 0 auto; accent-color: #123b6d; }.continue-btn { width: 100%; margin-top: 8px; border: 0; border-radius: 12px; padding: 11px; background: #123b6d; color: #fff; font-size: 11px; font-weight: 750; }
-.voice-state { display: flex; align-items: center; gap: 13px; min-height: 62px; padding: 7px; border-radius: 15px; background: linear-gradient(135deg,#edf4fa,#fbf7ec); }.voice-visual { position: relative; display: grid; place-items: center; width: 58px; height: 48px; flex: 0 0 58px; }.voice-core { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(145deg,#215e98,#0b315c); box-shadow: 0 6px 16px rgba(17,62,105,.25); color: #fff; font-size: 18px; }.voice-copy { min-width: 0; }.voice-copy strong,.voice-copy small { display: block; }.voice-copy strong { color: #123b6d; font-size: 12px; }.voice-copy small { max-width: 190px; margin-top: 5px; overflow: hidden; color: #728194; font-size: 9px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }.voice-bars { position: absolute; right: -2px; bottom: 3px; display: flex; align-items: center; gap: 2px; height: 25px; padding: 3px; border-radius: 8px; background: rgba(255,255,255,.9); }.voice-bars i { width: 2px; height: 7px; border-radius: 4px; background: linear-gradient(#2b81c2,#c69e51); animation: voice-bar .8s ease-in-out infinite alternate; }.voice-bars i:nth-child(2),.voice-bars i:nth-child(6){animation-delay:.15s}.voice-bars i:nth-child(3),.voice-bars i:nth-child(5){animation-delay:.3s}.voice-bars i:nth-child(4){animation-delay:.45s}.voice-cancel { width: 100%; margin-top: 9px; border: 0; background: transparent; color: #758397; font-size: 9px; }
+.assistant-panel.voice-panel { width: 214px; border-color: rgba(185,205,222,.82); border-radius: 999px; padding: 11px 18px; background: rgba(250,253,255,.96); box-shadow: 0 12px 30px rgba(11,51,91,.18); }
+.voice-state { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 34px; }.wave-dot { width: 4px; height: 4px; flex: 0 0 4px; border-radius: 50%; background: #c49a4c; box-shadow: 0 0 6px rgba(196,154,76,.55); }.voice-bars { display: flex; align-items: center; justify-content: center; gap: 3px; height: 32px; }.voice-bars i { width: 3px; height: 5px; border-radius: 4px; background: #174f82; opacity: .7; }.voice-bars.active i { animation: voice-bar .72s ease-in-out infinite alternate; }.voice-bars i:nth-child(2),.voice-bars i:nth-child(8),.voice-bars i:nth-child(14){animation-delay:.08s}.voice-bars i:nth-child(3),.voice-bars i:nth-child(7),.voice-bars i:nth-child(13){animation-delay:.16s}.voice-bars i:nth-child(4),.voice-bars i:nth-child(6),.voice-bars i:nth-child(10),.voice-bars i:nth-child(12){animation-delay:.24s}.voice-bars i:nth-child(5),.voice-bars i:nth-child(9),.voice-bars i:nth-child(11){animation-delay:.32s}.voice-transcript { display: block; margin: 2px auto 0; overflow: hidden; color: #758397; font-size: 8px; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
 .assistant-panel-enter-active,.assistant-panel-leave-active { transition: opacity .2s ease,transform .24s cubic-bezier(.2,.8,.2,1); }.assistant-panel-enter-from,.assistant-panel-leave-to { opacity: 0; transform: translateX(18px) scale(.94); }
 @keyframes voice-pulse { from{opacity:.8;transform:scale(.9)} to{opacity:0;transform:scale(1.45)} } @keyframes voice-bar { from{height:8px} to{height:30px} } @keyframes assistant-run { 0%,100%{transform:scale(.92);opacity:.72} 50%{transform:scale(1);opacity:1} } @keyframes orb-roam { 0%,100%{transform:translate(0,0) rotate(-2deg)} 24%{transform:translate(-4px,-8px) rotate(4deg)} 52%{transform:translate(2px,-4px) rotate(-3deg)} 76%{transform:translate(-3px,-10px) rotate(3deg)} } @keyframes orb-breathe { 0%,100%{transform:scale(.96);filter:drop-shadow(0 8px 10px rgba(8,39,75,.28))} 50%{transform:scale(1.06);filter:drop-shadow(0 12px 16px rgba(20,83,140,.42))} } @keyframes orbit-spin { to{transform:rotate(360deg)} } @keyframes spark-pop { 0%,35%,100%{opacity:0;transform:scale(.2) translate(0,4px)} 48%{opacity:1;transform:scale(1.3) translate(2px,-3px)} 65%{opacity:.25;transform:scale(.7) translate(5px,-8px)} }
 @media (prefers-reduced-motion:reduce){.assistant-orb,.assistant-orb img,.idle-orbit,.idle-spark,.pulse,.voice-bars i{animation-duration:8s!important}}
