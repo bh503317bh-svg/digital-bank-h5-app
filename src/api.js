@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useAuthStore } from './stores/auth'
+import { readAssistantStream } from './utils/assistantStream'
 
 const http = axios.create({
   baseURL: '/api',
@@ -22,6 +23,22 @@ export async function login(mobile, password) {
 export async function assistantChat(messages) {
   const { data } = await http.post('/assistant/chat', { messages }, { timeout: 100000 })
   return data
+}
+
+export async function streamAssistantChat(messages, handlers, signal) {
+  const auth = useAuthStore()
+  const response = await fetch('/api/assistant/chat/stream', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...(auth.token ? { Authorization: `Bearer ${auth.token}` } : {}) },
+    body: JSON.stringify({ messages }),
+    signal
+  })
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}))
+    throw new Error(body.detail || 'Could not connect. Please try again.')
+  }
+  if (!response.body) throw new Error('Streaming is not supported in this browser.')
+  await readAssistantStream(response.body.getReader(), handlers)
 }
 
 export async function fetchHome() {

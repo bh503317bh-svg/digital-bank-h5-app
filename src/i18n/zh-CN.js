@@ -461,9 +461,9 @@ export default {
     needDocumentAck: '请先阅读并同意产品销售文件'
   },
   wealthDetail: {
-    fundDataTitle: '基金信息 · 演示',
-    fundDataNote: '此演示不包含经核实的基金持仓、风险等级、交易条款或正式文件。投资前请查阅发行方的最新资料。历史收益不代表未来表现。',
-    demoMinimum: '演示最低金额',
+    fundDataTitle: '基金信息',
+    fundDataNote: '目前暂未提供经核实的基金持仓、风险等级、交易条款或正式文件。投资前请查阅发行方的最新资料。历史收益不代表未来表现。',
+    demoMinimum: '应用内最低订单金额',
     title: '产品详情',
     defaultName: '稳健收益精选',
     issuer: 'aku-bank 精选合作机构',

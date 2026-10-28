@@ -6,7 +6,7 @@
         <div><strong>aku-bank Assistant</strong><small>Your banking assistant · Powered by DeepSeek</small></div>
         <button class="close" type="button" aria-label="Close" @click="closePanel">×</button>
       </header>
-      <div ref="thread" class="thread" aria-live="polite">
+      <div ref="thread" class="thread" aria-live="polite" @load.capture="scroll">
         <div class="intro">Hello! Ask me about banking, investing, or finding a feature in the app.</div>
         <div v-if="!messages.length" class="shortcuts">
           <button type="button" @click="go({ path: '/orders' })">Transfer status <span>↗</span></button>
@@ -14,39 +14,41 @@
           <button type="button" @click="go({ path: '/funds' })">Explore funds <span>↗</span></button>
         </div>
         <template v-for="(item, index) in messages" :key="index">
-          <div class="bubble" :class="item.role">
+          <div v-if="item.content" class="bubble" :class="item.role">
             <AssistantMessage v-if="item.role === 'assistant'" :text="item.content" />
             <template v-else>{{ item.content }}</template>
           </div>
           <div v-if="item.actions?.length" class="action-group">
             <div class="action-heading">EXPLORE NEXT</div>
             <button v-for="action in item.actions" :key="action.path + (action.query?.id || '')" class="action-card" type="button" @click="go(action)">
-              <span class="action-icon"><van-icon :name="action.icon || 'arrow'" /></span>
+              <span v-if="productFor(action)" class="product-mark" :class="`sector-${productFor(action).sector}`" :aria-label="productFor(action).ticker">{{ productFor(action).ticker }}</span>
+              <span v-else class="action-icon"><van-icon :name="action.icon || 'arrow'" /></span>
               <span class="action-copy"><strong>{{ action.label }}</strong><small>{{ action.description }}</small></span>
               <van-icon name="arrow" class="action-arrow" />
             </button>
           </div>
         </template>
-        <div v-if="loading" class="thinking">Thinking…</div>
-        <div v-if="error" class="error" role="alert">{{ error }} <button v-if="messages.at(-1)?.role === 'user'" type="button" @click="retry">Retry</button></div>
+        <div v-if="loading && !messages.at(-1)?.content" class="thinking">Thinking…</div>
+        <div v-if="error" class="error" role="alert">{{ error }} <button v-if="canRetry" type="button" @click="retry">Retry</button></div>
       </div>
+      <div v-if="listening" class="voice-demo" role="status"><span class="voice-demo-label">Preparing your request</span><span class="voice-bars" aria-hidden="true"><i v-for="n in 15" :key="n" :style="{ height: `${5 + (n * 7) % 12}px`, animationDelay: `${n * -0.07}s` }"></i></span></div>
       <form class="composer" @submit.prevent="send()">
-        <input v-model="draft" placeholder="Ask a question…" aria-label="Your question" maxlength="4000" />
-        <button class="mic" type="button" :aria-label="listening ? 'Stop recording' : 'Start voice input'" :aria-pressed="listening" @click="toggleVoice"><span aria-hidden="true">{{ listening ? '■' : '🎙' }}</span></button>
+        <textarea v-model="draft" :rows="draft.length > 50 ? 3 : 1" placeholder="Ask a question…" aria-label="Your question" maxlength="4000" @keydown.enter.exact.prevent="send()"></textarea>
+        <button class="mic" :class="{ active: listening }" type="button" :aria-label="listening ? 'Cancel suggested request' : 'Insert suggested request'" :aria-pressed="listening" @click="toggleVoice"><span v-if="listening" class="mic-ripple" aria-hidden="true"></span><svg v-if="!listening" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3m-3 0h6"/></svg><svg v-else viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2"/></svg></button>
         <button class="send" type="submit" :disabled="!draft.trim() || loading || listening" aria-label="Send"><van-icon name="guide-o" /></button>
       </form>
-      <div v-if="voiceError" class="voice-error" role="alert">{{ voiceError }}</div>
-      <div class="foot">{{ listening ? 'Listening. Tap again to stop; review the text before sending.' : 'AI-generated responses. Do not share passwords or secrets.' }}</div>
+      <div class="foot">{{ listening ? 'Suggested text will appear shortly.' : 'AI-generated responses. Do not share passwords or secrets.' }}</div>
     </section>
-    <button class="orb" type="button" aria-label="Open assistant" @click="open ? closePanel() : open = true"><van-icon name="service-o" /></button>
+    <button class="orb" type="button" aria-label="Open assistant" @click="open ? closePanel() : openPanel()"><van-icon name="service-o" /></button>
   </div>
 </template>
 
 <script setup>
 import { computed, nextTick, onBeforeUnmount, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { assistantChat } from '../api'
+import { streamAssistantChat } from '../api'
 import AssistantMessage from './AssistantMessage.vue'
+import { fundMeta } from '../mock/products'
 
 const route = useRoute()
 const router = useRouter()
@@ -57,14 +59,18 @@ const messages = ref([])
 const loading = ref(false)
 const error = ref('')
 const listening = ref(false)
-const voiceError = ref('')
 const thread = ref(null)
-let recognition = null
+const canRetry = computed(() => messages.value.at(-1)?.role === 'user' || !!messages.value.at(-1)?.failed)
+const demoVoiceText = "I'd like to invest $100,000 in wealth management. Please recommend a suitable investment portfolio for me."
+let voiceTimer = null
+let activeRequest = null
+let destroyed = false
+const productFor = action => fundMeta.find(product => product.id === action.query?.id)
 
 async function scroll() { await nextTick(); if (thread.value) thread.value.scrollTop = thread.value.scrollHeight }
 async function send(text) {
   const value = (typeof text === 'string' ? text : draft.value).trim()
-  if (!value || loading.value) return
+  if (!value || loading.value || listening.value) return
   draft.value = ''
   error.value = ''
   messages.value.push({ role: 'user', content: value })
@@ -73,54 +79,59 @@ async function send(text) {
 async function request() {
   loading.value = true
   await scroll()
+  const history = messages.value.filter(item => !item.failed && item.content.trim()).slice(-24).map(({ role, content }) => ({ role, content: content.slice(0, 4000) }))
+  messages.value.push({ role: 'assistant', content: '', actions: [] })
+  const reply = messages.value[messages.value.length - 1]
+  const queue = []
+  let actions = []
+  const pump = window.setInterval(() => {
+    if (!queue.length || destroyed) return
+    const count = queue.length > 400 ? 8 : queue.length > 150 ? 5 : 3
+    reply.content += queue.splice(0, count).join('')
+    scroll()
+  }, 40)
+  const controller = new AbortController()
+  activeRequest = controller
+  const timeout = window.setTimeout(() => controller.abort(), 100000)
   try {
-    const history = messages.value.slice(-24).map(({ role, content }) => ({ role, content }))
-    const result = await assistantChat(history)
-    if (!result || typeof result.reply !== 'string') throw new Error('Invalid response')
-    const actions = Array.isArray(result.actions) ? result.actions : (result.action ? [result.action] : [])
-    messages.value.push({ role: 'assistant', content: result.reply, actions })
+    await streamAssistantChat(history, {
+      onDelta: text => queue.push(...Array.from(text)),
+      onActions: nextActions => { actions = nextActions }
+    }, controller.signal)
+    while (queue.length && !destroyed) await new Promise(resolve => window.setTimeout(resolve, 40))
+    if (!destroyed) {
+      reply.actions = actions
+      await scroll()
+    }
   } catch (e) {
-    error.value = e?.response?.data?.detail || 'Could not connect. Please try again.'
-  } finally { loading.value = false; await scroll() }
+    while (queue.length && !destroyed) await new Promise(resolve => window.setTimeout(resolve, 40))
+    if (!destroyed) {
+      if (reply.content.trim()) reply.failed = true
+      else messages.value.pop()
+      error.value = e?.name === 'AbortError' ? 'The response timed out. Please try again.' : (e?.message || 'Could not connect. Please try again.')
+    }
+  } finally {
+    window.clearInterval(pump)
+    window.clearTimeout(timeout)
+    if (activeRequest === controller) activeRequest = null
+    loading.value = false
+    if (!destroyed) await scroll()
+  }
 }
-function retry() { if (!loading.value && messages.value.at(-1)?.role === 'user') { error.value = ''; request() } }
-function closePanel() { if (listening.value) recognition?.stop(); open.value = false }
+function retry() { if (!loading.value && canRetry.value) { if (messages.value.at(-1)?.failed) messages.value.pop(); error.value = ''; request() } }
+function openPanel() { open.value = true; scroll() }
+function closePanel() { window.clearTimeout(voiceTimer); listening.value = false; open.value = false }
 function go(action) { closePanel(); router.push({ path: action.path, query: action.query || {} }) }
 function toggleVoice() {
-  if (listening.value) { recognition?.stop(); return }
-  voiceError.value = ''
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-  if (!SpeechRecognition) { voiceError.value = 'Speech recognition is unavailable here. Use Chrome or type instead.'; return }
-  const originalDraft = draft.value.trim()
-  let heardSpeech = false
-  let failed = false
-  recognition = new SpeechRecognition()
-  recognition.lang = 'en-US'
-  recognition.interimResults = true
-  recognition.continuous = true
-  recognition.onresult = event => {
-    const transcript = Array.from(event.results).map(result => result[0].transcript).join(' ').trim()
-    if (transcript) heardSpeech = true
-    draft.value = [originalDraft, transcript].filter(Boolean).join(' ').slice(0, 4000)
-  }
-  recognition.onerror = event => {
-    failed = true
-    const errors = {
-      'not-allowed': 'Microphone or speech permission was denied. Check browser settings.',
-      'audio-capture': 'No microphone was found. Check your device.',
-      'network': 'Speech recognition could not connect. Check your network or type instead.',
-      'no-speech': 'No speech was detected. Please try again.'
-    }
-    voiceError.value = errors[event.error] || 'Speech recognition failed. Please retry or type.'
-  }
-  recognition.onend = () => {
+  if (listening.value) { window.clearTimeout(voiceTimer); listening.value = false; return }
+  listening.value = true
+  voiceTimer = window.setTimeout(() => {
+    draft.value = [draft.value.trim(), demoVoiceText].filter(Boolean).join(' ').slice(0, 4000)
     listening.value = false
-    recognition = null
-    if (!heardSpeech && !failed) voiceError.value = 'No speech was detected. Please try again.'
-  }
-  try { recognition.start(); listening.value = true } catch { recognition = null; voiceError.value = 'Unable to start speech recognition.' }
+    voiceTimer = null
+  }, 1700)
 }
-onBeforeUnmount(() => { recognition?.abort() })
+onBeforeUnmount(() => { destroyed = true; window.clearTimeout(voiceTimer); activeRequest?.abort() })
 </script>
 
 <style scoped>
@@ -141,4 +152,21 @@ onBeforeUnmount(() => { recognition?.abort() })
 .action-copy strong { font-size: 11px; line-height: 1.3; font-weight: 700; }
 .action-copy small { margin-top: 2px; color: #8190a1; font-size: 10px; line-height: 1.3; }
 .action-arrow { color: #a8b7c5; font-size: 12px; }
+.composer textarea { min-width: 0; min-height: 36px; max-height: 86px; flex: 1; padding: 8px; border: 0; outline: 0; resize: none; background: transparent; color: #142033; font: inherit; font-size: 12px; line-height: 1.4; }
+.product-mark { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 38px; border-radius: 11px; background: #e8eff9; color: #27517e; font-size: 9px; font-weight: 800; letter-spacing: -.02em; }
+.sector-gold { background: #f9f0d9; color: #9b6d1f; }
+.sector-bond, .sector-dividend { background: #e6f4ed; color: #39745a; }
+.sector-biotech, .sector-healthcare { background: #f1e9f7; color: #765295; }
+.sector-broad, .sector-asean { background: #e8f0fa; color: #365c8b; }
+.voice-demo { display: flex; align-items: center; gap: 12px; margin: 0 12px 8px; padding: 9px 12px; border: 1px solid #d6e5f1; border-radius: 12px; background: #f2f7fb; }
+.voice-demo-label { color: #325778; font-size: 10px; font-weight: 650; white-space: nowrap; }
+.voice-bars { display: flex; align-items: center; justify-content: center; gap: 3px; flex: 1; height: 20px; }
+.voice-bars i { display: block; width: 3px; min-height: 5px; border-radius: 3px; background: #3577aa; animation: voice-wave .56s ease-in-out infinite alternate; }
+.composer .mic { position: relative; overflow: visible; }
+.mic svg { position: relative; z-index: 1; width: 19px; height: 19px; }
+.mic.active { background: #e6f1fa; color: #1a5b8e; }
+.mic-ripple { position: absolute; inset: 2px; border: 1px solid #6d9ec0; border-radius: 50%; animation: mic-ripple 1s ease-out infinite; }
+@keyframes voice-wave { from { transform: scaleY(.4); opacity: .55; } to { transform: scaleY(1.45); opacity: 1; } }
+@keyframes mic-ripple { from { transform: scale(.8); opacity: .7; } to { transform: scale(1.75); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .voice-bars i, .mic-ripple { animation: none; } }
 </style>

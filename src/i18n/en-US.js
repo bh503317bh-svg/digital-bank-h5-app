@@ -461,9 +461,9 @@ export default {
     needDocumentAck: 'Please read and accept the product sales documents'
   },
   wealthDetail: {
-    fundDataTitle: 'Fund information · demo',
-    fundDataNote: 'This demo does not include verified fund holdings, risk ratings, trading terms or official documents. Review the issuer’s current materials before investing. Past returns do not guarantee future performance.',
-    demoMinimum: 'Demo minimum',
+    fundDataTitle: 'Fund information',
+    fundDataNote: 'Verified fund holdings, risk ratings, trading terms and official documents are not currently available here. Review the issuer’s current materials before investing. Past returns do not guarantee future performance.',
+    demoMinimum: 'Minimum order in app',
     title: 'Product details',
     defaultName: 'Conservative Income Select',
     issuer: 'aku-bank selected partner',
