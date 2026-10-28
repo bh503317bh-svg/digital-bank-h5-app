@@ -41,7 +41,7 @@
           <div><small>{{ t('wealthBuy.myRiskProfile') }}</small><strong>{{ t('wealthBuy.profileR2') }}</strong></div>
           <van-icon name="exchange" />
           <div><small>{{ t('wealthBuy.productRisk') }}</small><strong>{{ productRisk }}</strong></div>
-          <b><van-icon name="passed" /> {{ t('wealthBuy.matched') }}</b>
+          <b v-if="!isFund"><van-icon name="passed" /> {{ t('wealthBuy.matched') }}</b>
         </div>
         <div class="term-row">
           <div><strong>{{ t('wealthBuy.riskConfirm') }}</strong><small>{{ t('wealthBuy.riskConfirmHint') }}</small><small v-if="riskError" class="field-error"><van-icon name="warning-o" /> {{ t('desk.riskNeed') }}</small></div>
@@ -115,14 +115,15 @@ const productId = computed(() => String(route.query.id || 'hqPlusX'))
 const productName = computed(() => String(route.query.name || t('newbie.hqPlusX')))
 const rate = computed(() => String(route.query.rate || ''))
 const product = computed(() => { locale.value; return localizeWealthProducts(t).find((item) => item.id === productId.value) })
-const productRisk = computed(() => productId.value === 'f7' ? t('wealthDetail.r4') : product.value?.risk || t('wealthBuy.riskMedium'))
+const isFund = computed(() => /^f\d+$/.test(productId.value))
+const productRisk = computed(() => isFund.value ? '—' : product.value?.risk || t('wealthBuy.riskMedium'))
 const productHold = computed(() => product.value?.hold || t('wealthBuy.flexible'))
 const steps = computed(() => [t('wealthBuy.stepProduct'), t('wealthBuy.stepDetails'), t('wealthBuy.stepReview'), t('wealthBuy.stepComplete')])
 const currentStep = computed(() => showReview.value ? 2 : 1)
 const accounts = ref([])
 const accountNo = ref('')
 const balance = ref('0')
-const amount = ref('100')
+const amount = ref(String(route.query.amount || '100'))
 const presets = [100, 500, 1000]
 const loading = ref(false)
 const openingAccount = ref(false)

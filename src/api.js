@@ -19,6 +19,11 @@ export async function login(mobile, password) {
   return data
 }
 
+export async function assistantChat(messages) {
+  const { data } = await http.post('/assistant/chat', { messages }, { timeout: 100000 })
+  return data
+}
+
 export async function fetchHome() {
   const { data } = await http.get('/app/home')
   return data
