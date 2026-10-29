@@ -111,4 +111,26 @@ export async function shopBuy(payload) {
   return data
 }
 
+export async function submitFeedback(payload) {
+  const { data } = await http.post('/cm/cases', {
+    case_type: payload.case_type,
+    priority: 'P3',
+    channel: 'app',
+    subject: payload.subject,
+    description: payload.description,
+    auto_assign: false
+  })
+  return data
+}
+
+export async function listMyFeedback() {
+  const { data } = await http.get('/cm/cases')
+  return data
+}
+
+export async function fetchFeedback(id) {
+  const { data } = await http.get(`/cm/cases/${id}`)
+  return data
+}
+
 export default http

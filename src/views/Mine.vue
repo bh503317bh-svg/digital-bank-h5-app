@@ -83,6 +83,8 @@
         <van-cell :title="t('mine.security')" :label="t('mine.securityDesc')" is-link @click="go('/security')" />
         <van-cell :title="t('mine.notify')" :label="t('mine.notifyDesc')" is-link :value="unreadText" @click="go('/notices')" />
         <van-cell :title="t('mine.profile')" :label="t('mine.profileDesc')" is-link @click="showProfile = true" />
+        <van-cell :title="t('mine.feedback')" :label="t('mine.feedbackDesc')" is-link @click="go('/feedback')" />
+        <van-cell :title="t('mine.myFeedback')" :label="t('mine.myFeedbackDesc')" is-link @click="go('/feedback/list')" />
         <van-cell :title="t('mine.about')" is-link @click="showAbout = true" />
       </van-cell-group>
 
