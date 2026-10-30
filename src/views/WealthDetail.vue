@@ -82,7 +82,10 @@
     </section>
 
     <div class="buy-bar">
-      <div><small>{{ t('wealthDetail.minimum') }}</small><strong>USD $100.00</strong></div>
+      <div>
+        <small>{{ assistantAmountCents ? t('wealthDetail.preparedAmount') : t('wealthDetail.minimum') }}</small>
+        <strong>{{ assistantAmountCents ? `USD $${formatCents(assistantAmountCents)}` : 'USD $100.00' }}</strong>
+      </div>
       <van-button round type="primary" @click="buy">{{ t('wealthDetail.subscribe') }}</van-button>
     </div>
     <van-action-sheet v-model:show="showDocument" :title="activeDocument" round>
@@ -104,6 +107,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { showSuccessToast } from 'vant'
 import { localizeFunds, localizeWealthProducts } from '../mock/products'
+import { formatCents, isAssistantQuery, parseRouteAmount } from '../services/assistant'
 import { isWatched, toggleWatch } from '../utils/local'
 import FeatureIcon from '../components/FeatureIcon.vue'
 
@@ -122,6 +126,9 @@ const product = computed(() => {
 })
 const productName = computed(() => suppliedName.value || product.value?.name || t('wealthDetail.defaultName'))
 const rate = computed(() => suppliedRate.value || product.value?.rate || product.value?.y1 || '')
+const assistantAmountCents = computed(() => isAssistantQuery(route.query)
+  ? parseRouteAmount(route.query.amount)
+  : null)
 const issuer = computed(() => isGold.value ? t('wealthDetail.goldIssuer') : product.value?.org || t('wealthDetail.issuer'))
 const rateLabel = computed(() => product.value?.rateLabel || t('wealthDetail.annualReturn'))
 const holding = computed(() => product.value?.hold || t('wealthDetail.flexible'))
@@ -140,7 +147,12 @@ function toggle() {
 }
 
 function buy() {
-  router.push({ path: '/wealth/buy', query: { id: productId.value, name: productName.value, rate: rate.value } })
+  const query = { id: productId.value, name: productName.value, rate: rate.value }
+  if (assistantAmountCents.value) {
+    query.amount = formatCents(assistantAmountCents.value)
+    query.assistant = '1'
+  }
+  router.push({ path: '/wealth/buy', query })
 }
 
 function openDocument(doc) {

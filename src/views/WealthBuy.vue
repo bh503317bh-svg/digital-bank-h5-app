@@ -57,7 +57,7 @@
 
       <div class="sticky-submit">
         <div><small>{{ t('wealthBuy.orderAmount') }}</small><strong>{{ money(validAmount, { currency: 'USD', showCode: true }) }}</strong></div>
-        <van-button round type="primary" native-type="submit" :disabled="!canReview">{{ t('wealthBuy.review') }}</van-button>
+        <van-button round type="primary" native-type="submit" :disabled="!canReview || submitting">{{ t('wealthBuy.review') }}</van-button>
       </div>
     </van-form>
 
@@ -85,7 +85,7 @@
         <div class="review-row"><span>{{ t('wealthBuy.fee') }}</span><b>{{ money(0, { currency: 'USD', showCode: true }) }}</b></div>
         <div class="review-row"><span>{{ t('wealthBuy.settlement') }}</span><b>{{ t('wealthBuy.settlementValue') }}</b></div>
         <div class="review-note"><van-icon name="warning-o" /> {{ t('wealthBuy.finalNotice') }}</div>
-        <van-button round block type="primary" :loading="loading" @click="confirmPurchase">{{ t('wealthBuy.authorize') }}</van-button>
+        <van-button round block type="primary" :loading="submitting" :disabled="submitting" @click="confirmPurchase">{{ t('wealthBuy.authorize') }}</van-button>
         <button class="cancel-review" @click="showReview = false">{{ t('common.cancel') }}</button>
       </div>
     </van-action-sheet>
@@ -105,7 +105,8 @@ import FeatureIcon from '../components/FeatureIcon.vue'
 import { maskAccount, money } from '../utils'
 import { pushNotice } from '../utils/local'
 import { addHolding, getKyc, saveKyc } from '../services/desk'
-import { localizeWealthProducts } from '../mock/products'
+import { localizeFunds, localizeWealthProducts } from '../mock/products'
+import { formatCents, isAssistantQuery, parseRouteAmount } from '../services/assistant'
 import { openResult } from '../utils/result'
 
 const { t, locale } = useI18n()
@@ -114,7 +115,12 @@ const router = useRouter()
 const productId = computed(() => String(route.query.id || 'hqPlusX'))
 const productName = computed(() => String(route.query.name || t('newbie.hqPlusX')))
 const rate = computed(() => String(route.query.rate || ''))
-const product = computed(() => { locale.value; return localizeWealthProducts(t).find((item) => item.id === productId.value) })
+const product = computed(() => {
+  locale.value
+  return localizeWealthProducts(t).find((item) => item.id === productId.value)
+    || localizeFunds(t).find((item) => item.id === productId.value)
+    || null
+})
 const productRisk = computed(() => productId.value === 'f7' ? t('wealthDetail.r4') : product.value?.risk || t('wealthBuy.riskMedium'))
 const productHold = computed(() => product.value?.hold || t('wealthBuy.flexible'))
 const steps = computed(() => [t('wealthBuy.stepProduct'), t('wealthBuy.stepDetails'), t('wealthBuy.stepReview'), t('wealthBuy.stepComplete')])
@@ -122,14 +128,16 @@ const currentStep = computed(() => showReview.value ? 2 : 1)
 const accounts = ref([])
 const accountNo = ref('')
 const balance = ref('0')
-const amount = ref('100')
+const assistantEntry = isAssistantQuery(route.query)
+const assistantAmountCents = assistantEntry ? parseRouteAmount(route.query.amount) : null
+const amount = ref(assistantAmountCents ? formatCents(assistantAmountCents) : '100')
 const presets = [100, 500, 1000]
-const loading = ref(false)
+const submitting = ref(false)
 const openingAccount = ref(false)
 const showPicker = ref(false)
 const showReview = ref(false)
 const payPwd = ref(null)
-const riskAck = ref(!!getKyc().riskAck)
+const riskAck = ref(assistantEntry ? false : !!getKyc().riskAck)
 const documentAck = ref(false)
 const riskError = ref(false)
 const documentError = ref(false)
@@ -195,20 +203,52 @@ function reviewOrder() {
 }
 
 async function confirmPurchase() {
-  showReview.value = false
-  const pin = await payPwd.value.ask()
-  if (!pin) return
-  loading.value = true
+  if (submitting.value) return
+  submitting.value = true
   try {
-    const res = await wealthBuy({ account_no: accountNo.value, amount: String(validAmount.value.toFixed(2)), product_id: productId.value, product_name: productName.value, pay_password: pin })
+    showReview.value = false
+    const pin = await payPwd.value.ask()
+    if (!pin) return
+    let res
+    try {
+      res = await wealthBuy({
+        account_no: accountNo.value,
+        amount: formatCents(Math.round(validAmount.value * 100)),
+        product_id: productId.value,
+        product_name: productName.value,
+        pay_password: pin
+      })
+    } catch {
+      openFailure(t('wealthBuy.networkUncertain'))
+      return
+    }
     if (res.code !== 0) {
-      openResult(router, { kind: 'wealth', note: t('result.note_wealth'), ok: false, title: t('wealthBuy.fail'), reason: res.message || t('wealthBuy.fail'), amount: money(validAmount.value, { currency: 'USD', showCode: true }), subtitle: productName.value, back: '/wealth', rows: [{ label: t('result.product'), value: productName.value }, { label: t('wealthBuy.account'), value: maskAccount(accountNo.value) }] })
+      openFailure(res.message || t('wealthBuy.fail'))
       return
     }
     addHolding({ productId: productId.value, name: productName.value, amount: validAmount.value, rate: rate.value })
     pushNotice(t('wealthBuy.ok'), productName.value)
     openResult(router, { kind: 'wealth', note: t('result.note_wealth'), title: t('wealthBuy.ok'), amount: money(validAmount.value, { currency: 'USD', showCode: true }), subtitle: productName.value, ref: res.data?.txn_id, back: '/wealth', rows: [{ label: t('result.product'), value: productName.value }, { label: t('wealthBuy.account'), value: maskAccount(accountNo.value) }, { label: t('wealthBuy.settlement'), value: t('wealthBuy.settlementValue') }] })
-  } finally { loading.value = false }
+  } finally {
+    submitting.value = false
+  }
+}
+
+function openFailure(reason) {
+  openResult(router, {
+    kind: 'wealth',
+    note: t('result.note_wealth'),
+    ok: false,
+    title: t('wealthBuy.fail'),
+    reason,
+    amount: money(validAmount.value, { currency: 'USD', showCode: true }),
+    subtitle: productName.value,
+    back: '/wealth',
+    rows: [
+      { label: t('result.product'), value: productName.value },
+      { label: t('wealthBuy.account'), value: maskAccount(accountNo.value) }
+    ]
+  })
 }
 </script>
 

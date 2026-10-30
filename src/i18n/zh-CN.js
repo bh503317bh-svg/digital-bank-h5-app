@@ -26,6 +26,32 @@ export default {
     en: 'English',
     switched: '已切换为中文'
   },
+  assistant: {
+    title: 'aku-bank Assistant',
+    subtitle: '您的智能投资助手',
+    open: '打开智能助手',
+    close: '关闭助手',
+    focus: '聚焦助手输入框',
+    welcomeTitle: '想了解或购买哪款投资产品？',
+    welcomeBody: '告诉我产品名称和美元金额，我会为您准备好申购。',
+    quickActions: '快捷操作',
+    recognizing: '正在识别您的意图',
+    listening: '正在聆听…',
+    voiceHint: '松开结束',
+    processing: '正在处理语音…',
+    voiceDraftHint: '已生成模拟语音文本，请编辑后发送。',
+    inputPlaceholder: '例如：Buy QQQ for USD 500',
+    send: '发送',
+    askAmount: '您想投入 {name} 多少金额？最低 {amount}。',
+    belowMinimum: '最低申购金额为 {amount}。请为 {name} 输入更高的金额。',
+    recommendIntro: '根据您的需求，为您找到这些产品。选择一个继续。',
+    ambiguousIntro: '识别到多个可能的产品，请选择您要购买的一款。',
+    notInvestment: '我可以协助投资申购。试试“Buy QQQ for USD 500”或“Find high-yield investment products”。',
+    chooseProduct: '选择 {name}',
+    referenceReturn: '近一年参考回报',
+    recommendationNote: '回报为历史数据，不代表未来收益。',
+    select: '选择'
+  },
   login: {
     sub: '安全 · 便捷 · 开放银行体验',
     mobile: '手机号',
@@ -458,7 +484,8 @@ export default {
     matched: '风险等级匹配',
     documentAck: '我已阅读、理解并同意',
     documentLinks: '产品说明书、风险揭示书及投资者权益须知',
-    needDocumentAck: '请先阅读并同意产品销售文件'
+    needDocumentAck: '请先阅读并同意产品销售文件',
+    networkUncertain: '无法确认交易结果，请先核对订单或交易记录后重试。'
   },
   wealthDetail: {
     title: '产品详情',
@@ -482,6 +509,7 @@ export default {
     performanceNotice: '历史业绩不代表未来',
     keyFacts: '产品要素',
     minimum: '最低申购',
+    preparedAmount: '已准备金额',
     currency: '投资币种',
     dealing: '开放频率',
     businessDaily: '每个工作日',

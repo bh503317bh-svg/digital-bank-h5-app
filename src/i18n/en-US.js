@@ -26,6 +26,32 @@ export default {
     en: 'English',
     switched: 'Switched to English'
   },
+  assistant: {
+    title: 'aku-bank Assistant',
+    subtitle: 'Your investment copilot',
+    open: 'Open assistant',
+    close: 'Close assistant',
+    focus: 'Focus assistant input',
+    welcomeTitle: 'How can I help with your investment?',
+    welcomeBody: 'Tell me the product and USD amount. I can prepare the order for you.',
+    quickActions: 'Quick actions',
+    recognizing: 'Recognizing your intent',
+    listening: 'Listening…',
+    voiceHint: 'Release to finish',
+    processing: 'Processing speech…',
+    voiceDraftHint: 'Simulated speech is ready. Edit it before sending.',
+    inputPlaceholder: 'e.g. Buy QQQ for USD 500',
+    send: 'Send',
+    askAmount: 'How much would you like to invest in {name}? Minimum {amount}.',
+    belowMinimum: 'The minimum investment is {amount}. Please enter a higher amount for {name}.',
+    recommendIntro: 'Here are options based on your request. Select one to continue.',
+    ambiguousIntro: 'I found more than one possible product. Select the one you mean.',
+    notInvestment: 'I can help with investment purchases. Try “Buy QQQ for USD 500” or “Find high-yield investment products”.',
+    chooseProduct: 'Choose {name}',
+    referenceReturn: '1-year reference return',
+    recommendationNote: 'Returns are historical and do not guarantee future performance.',
+    select: 'Select'
+  },
   login: {
     sub: 'Safe · Convenient · Open banking',
     mobile: 'Mobile',
@@ -458,7 +484,8 @@ export default {
     matched: 'Suitability matched',
     documentAck: 'I have read, understood and agree to the',
     documentLinks: 'product document, risk disclosure and investor rights notice',
-    needDocumentAck: 'Please read and accept the product sales documents'
+    needDocumentAck: 'Please read and accept the product sales documents',
+    networkUncertain: 'Unable to confirm the transaction. Check your order or transaction history before trying again.'
   },
   wealthDetail: {
     title: 'Product details',
@@ -482,6 +509,7 @@ export default {
     performanceNotice: 'Past performance is not indicative',
     keyFacts: 'Key facts',
     minimum: 'Minimum',
+    preparedAmount: 'Prepared amount',
     currency: 'Currency',
     dealing: 'Dealing',
     businessDaily: 'Every business day',
